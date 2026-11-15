@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lễ Tạ Ơn 2026 · Las Vegas → Zion → Kanab · Bản đồ mô phỏng</title>
+<style>
+:root{--bg:#f8f9fa;--ink:#202124;--mute:#5f6368;--line:#e3e5e8;--d1:#1a73e8;--d2:#e8710a;--d3:#188038;--d4:#a142f4;}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+button{font:inherit;cursor:pointer}
+#app{display:grid;grid-template-columns:380px 1fr;grid-template-rows:auto 1fr auto;height:100vh}
+header{grid-column:1/3;display:flex;align-items:center;gap:18px;padding:10px 18px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.1px}
+header .sub{font-size:12.5px;color:var(--mute);margin-top:2px}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px}
+.tab i{width:10px;height:10px;border-radius:50%;background:var(--c,#5f6368);display:inline-block}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+aside{grid-row:2/4;overflow:auto;background:#fff;border-right:1px solid var(--line);padding:16px 16px 40px}
+#mapwrap{position:relative;overflow:hidden;background:#f2efe9;touch-action:none;cursor:grab}
+#mapwrap:active{cursor:grabbing}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block}
+#overlay{position:absolute;inset:0;pointer-events:none}
+#night{position:absolute;inset:0;pointer-events:none;background:#0b1640;opacity:0;transition:opacity .4s}
+footer{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-top:1px solid var(--line);flex-wrap:wrap}
+.pbtn{width:42px;height:42px;border-radius:50%;border:none;background:var(--ink);color:#fff;font-size:17px;display:grid;place-items:center;flex:none}
+.sbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font-size:13px}
+#scrub{flex:1;min-width:140px;accent-color:var(--ink)}
+.opt{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--mute);user-select:none}
+select{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:6px}
+/* pins */
+.pin{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;will-change:transform}
+.drop{position:absolute;left:-15px;top:-40px;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35)}
+.drop b{position:absolute;inset:0;display:grid;place-items:center;transform:rotate(45deg);color:#fff;font-size:13px;font-weight:800}
+.dot{position:absolute;left:-13px;top:-13px;width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--c);display:grid;place-items:center;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.lbl{position:absolute;left:16px;top:-31px;white-space:nowrap;font-size:12px;font-weight:650;color:#202124;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;pointer-events:none}
+.pin.alt .lbl{left:15px;top:-10px;font-weight:600;color:#3c4043;font-size:11.5px}
+.pin.hide-lbl .lbl{display:none}
+.pin:hover .lbl{display:block!important;z-index:5}
+.pin:hover{z-index:20}
+.badge{position:absolute;left:8px;top:-48px;background:#202124;color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 6px;border:1.5px solid #fff}
+.pin.alt .badge{left:6px;top:-22px}
+.city{position:absolute;left:0;top:0;transform-origin:0 0;white-space:nowrap;font-size:11px;color:#5f6368;text-shadow:0 0 3px #f2efe9,0 0 3px #f2efe9,0 0 2px #f2efe9;pointer-events:none}
+.city.r1{font-size:13px;font-weight:700;color:#3c4043}
+.city.state{font-size:14px;letter-spacing:5px;color:#9aa0a6;font-weight:600}
+.city.park{font-size:11px;color:#2e6b32;font-style:italic;font-weight:600}
+.city.water{font-size:11px;color:#3b7fb6;font-style:italic}
+.city.tz{font-size:11px;color:#8e24aa;font-weight:700;background:#fff;border:1px solid #e1bee7;border-radius:6px;padding:1px 6px;text-shadow:none}
+.shield{position:absolute;left:0;top:0;font-size:10px;font-weight:800;padding:1px 4px;border-radius:4px;white-space:nowrap;pointer-events:none;box-shadow:0 0 0 1.5px #fff}
+.shield.i{background:#1d4ea3;color:#fff;border-top:3px solid #c62828}
+.shield.us{background:#fff;color:#202124;border:1.5px solid #202124}
+.shield.st{background:#fff;color:#202124;border:1.5px solid #6d6d6d;border-radius:9px}
+.car{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;z-index:30}
+.car .ring{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border-radius:50%;background:rgba(26,115,232,.18);animation:pulse 1.6s infinite}
+.car .body{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:var(--c,#1a73e8);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4);display:grid;place-items:center;font-size:13px}
+.car .arr{position:absolute;left:-6px;top:-27px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid var(--c,#1a73e8);transform-origin:6px 27px}
+@keyframes pulse{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.4);opacity:0}}
+/* map chrome */
+.ctl{position:absolute;right:12px;bottom:14px;display:flex;flex-direction:column;background:#fff;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.25);overflow:hidden;z-index:40}
+.ctl button{width:38px;height:38px;border:none;background:#fff;font-size:18px;border-bottom:1px solid var(--line)}
+.ctl button:last-child{border-bottom:none;font-size:14px}
+.hud{position:absolute;left:12px;top:12px;background:#fff;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.25);padding:9px 13px;z-index:40;max-width:min(360px,calc(100% - 24px))}
+.hud .k{font-size:11.5px;color:var(--mute);font-weight:600}
+.hud .clock{font-size:22px;font-weight:800;letter-spacing:.3px;font-variant-numeric:tabular-nums}
+.hud .clock small{font-size:11.5px;font-weight:600;color:var(--mute);margin-left:6px}
+.hud .st{font-size:12.5px;margin-top:2px}
+.layers{position:absolute;left:12px;bottom:14px;background:#fff;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.25);padding:8px 12px;z-index:40;font-size:12px}
+.layers summary{cursor:pointer;font-weight:700;color:#3c4043;list-style:none}.layers summary::-webkit-details-marker{display:none}.layers[open] summary{margin-bottom:4px}
+.layers label{display:flex;align-items:center;gap:6px;margin:3px 0;cursor:pointer}
+.layers .lg{display:flex;gap:10px;margin-top:6px;padding-top:6px;border-top:1px solid var(--line);color:var(--mute);flex-wrap:wrap}
+.layers .lg span{display:flex;align-items:center;gap:4px}
+.layers .lg svg{width:26px;height:8px}
+.card{position:absolute;right:12px;top:12px;width:340px;max-height:calc(100% - 24px);overflow:auto;background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.3);z-index:50;cursor:default}
+.card[hidden]{display:none}
+.card .img{height:170px;overflow:hidden;border-radius:14px 14px 0 0;position:relative}
+.card .img svg{width:100%;height:100%;display:block}
+.card .x{position:absolute;right:8px;top:8px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.92);font-size:15px}
+.card .bd{padding:12px 15px 15px}
+.card .k{font-size:11.5px;font-weight:700;color:var(--c,#5f6368);text-transform:uppercase;letter-spacing:.4px}
+.card h3{margin:3px 0 8px;font-size:18px;line-height:1.25}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{font-size:11.5px;background:#f1f3f4;border-radius:999px;padding:3px 9px;color:#3c4043;font-weight:600}
+.card ul{margin:0;padding-left:18px;font-size:13.2px;line-height:1.5}
+.card ul li{margin:3px 0}
+.near{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+.near .t{font-size:11.5px;font-weight:700;color:var(--mute);margin-bottom:5px}
+.near button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:12px;margin:0 4px 5px 0}
+.acts{display:flex;gap:8px;margin-top:12px}
+.acts a,.acts button{flex:1;text-align:center;text-decoration:none;border-radius:8px;padding:8px;font-size:13px;font-weight:650}
+.acts a{background:#1a73e8;color:#fff}
+.acts button{border:1px solid var(--line);background:#fff}
+/* side */
+aside h2{font-size:19px;margin:4px 0 6px}
+aside h3{font-size:13.5px;margin:20px 0 8px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0 4px}
+.stat{background:var(--bg);border-radius:10px;padding:8px;text-align:center}
+.stat b{display:block;font-size:17px}
+.stat span{font-size:11px;color:var(--mute)}
+.daycard{display:block;width:100%;text-align:left;border:1px solid var(--line);border-left:5px solid var(--c);background:#fff;border-radius:12px;padding:10px 12px;margin:8px 0}
+.daycard:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.dc-k{font-size:11.5px;font-weight:700;color:var(--c)}
+.dc-t{font-size:14.5px;font-weight:700;margin:2px 0}
+.dc-m{font-size:12px;color:var(--mute)}
+.thumbs{display:flex;gap:5px;margin-top:8px}
+.thumbs div{flex:1;height:46px;border-radius:7px;overflow:hidden}
+.thumbs svg,.th svg,.alt-b .th svg{width:100%;height:100%;display:block}
+.checks{padding-left:0;list-style:none;margin:0;font-size:13px;line-height:1.45}
+.checks li{padding:6px 0 6px 26px;position:relative;border-bottom:1px dashed var(--line)}
+.checks li::before{content:"✓";position:absolute;left:4px;top:6px;color:#188038;font-weight:800}
+.links a{display:block;font-size:12.5px;color:#1a73e8;margin:4px 0;text-decoration:none}
+.fine{font-size:11.5px;color:var(--mute);line-height:1.5;margin-top:18px}
+.dayhead{border-radius:14px;padding:12px 14px;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 60%,#000));color:#fff}
+.dayhead .dh-k{font-size:12px;font-weight:700;opacity:.9}
+.dayhead h2{color:#fff;margin:3px 0 4px}
+.dayhead .dh-m{font-size:12.5px;opacity:.95}
+.dh-act{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.dh-act button,.dh-act a{border:none;background:#fff;color:var(--ink);border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:700;text-decoration:none}
+.dh-act a{background:rgba(255,255,255,.18);color:#fff}
+ol.stops{list-style:none;padding:0;margin:14px 0 0}
+ol.stops li.s{display:flex;gap:10px;align-items:flex-start;padding:7px;border-radius:10px;cursor:pointer}
+ol.stops li.s:hover,ol.stops li.s.on{background:#f1f3f4}
+.th{width:84px;height:52px;border-radius:8px;overflow:hidden;flex:none;position:relative}
+.th .n{position:absolute;left:4px;top:4px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;border:1.5px solid #fff}
+.s .tm{font-size:11.5px;color:var(--mute);font-weight:700}
+.s .nm{font-size:14px;font-weight:700;line-height:1.25}
+.s .sn{font-size:12px;color:var(--mute);line-height:1.35;margin-top:2px}
+li.leg{font-size:11.5px;color:var(--mute);padding:1px 0 1px 46px;border-left:2px dashed var(--c);margin-left:48px;padding-left:12px;line-height:1.9}
+.notes{margin:0;padding-left:18px;font-size:13px;line-height:1.5}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.alt-b{border:1px solid var(--line);background:#fff;border-radius:10px;padding:0;text-align:left;overflow:hidden}
+.alt-b .th{width:100%;height:58px;border-radius:0}
+.alt-b .t{padding:6px 8px 8px;font-size:12.5px;font-weight:700;line-height:1.25}
+.alt-b .t small{display:block;font-weight:600;color:var(--mute);font-size:11px;margin-top:2px}
+@media (max-width:880px){
+ #app{grid-template-columns:1fr;grid-template-rows:auto 60vh auto auto;height:auto}
+ header{grid-column:1;grid-row:1}
+ #mapwrap{grid-row:2}
+ footer{grid-row:3}
+ aside{grid-row:4;border-right:none;border-top:1px solid var(--line)}
+ .tabs{margin-left:0}
+ .card{left:8px;right:8px;width:auto;top:auto;bottom:8px;max-height:72%}
+ .card .img{height:130px}
+ .layers{display:none}
+ .hud .clock{font-size:18px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+ <header>
+  <div>
+   <h1>🦃 Lễ Tạ Ơn 2026 · Las Vegas → Zion → Kanab</h1>
+   <div class="sub">26–29/11 · 4 người · 3 đêm Airbnb ở Kanab · bản đồ mô phỏng chạy offline</div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+ </header>
+ <aside id="side"></aside>
+ <section id="mapwrap">
+  <svg id="map" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><g id="base"></g><g id="routes"></g></svg>
+  <div id="night"></div>
+  <div id="overlay"></div>
+  <div class="hud" id="hud"></div>
+  <details class="layers ctl-l" id="layers"><summary>☰ Lớp bản đồ & chú thích</summary>
+   <label><input type="checkbox" id="lySee" checked> 📸 Check-in dự phòng</label>
+   <label><input type="checkbox" id="lyFood" checked> 🍽️ Ăn uống dự phòng</label>
+   <label><input type="checkbox" id="lyTz" checked> Ranh giới múi giờ</label>
+   <div class="lg">
+    <span><svg viewBox="0 0 26 8"><path d="M1 4H25" stroke="#1a73e8" stroke-width="4"/></svg>Lái xe</span>
+    <span><svg viewBox="0 0 26 8"><path d="M1 4H25" stroke="#1a73e8" stroke-width="4" stroke-dasharray="6 3"/></svg>Shuttle</span>
+    <span><svg viewBox="0 0 26 8"><path d="M1 4H25" stroke="#1a73e8" stroke-width="3" stroke-dasharray="1 4" stroke-linecap="round"/></svg>Đi bộ</span>
+   </div>
+  </details>
+  <div class="ctl">
+   <button id="zin" title="Phóng to">+</button>
+   <button id="zout" title="Thu nhỏ">−</button>
+   <button id="zfit" title="Xem cả tuyến">⤢</button>
+  </div>
+  <div class="card" id="card" hidden></div>
+ </section>
+ <footer>
+  <button class="pbtn" id="play" title="Chạy / dừng (phím Space)">▶</button>
+  <button class="sbtn" id="prev" title="Ngày trước">⏮</button>
+  <button class="sbtn" id="next" title="Ngày sau">⏭</button>
+  <input type="range" id="scrub" min="0" max="1" step="1" value="0">
+  <select id="speed" title="Tốc độ"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+  <label class="opt"><input type="checkbox" id="follow" checked> Camera theo xe</label>
+  <label class="opt"><input type="checkbox" id="auto" checked> Tự mở thẻ điểm dừng</label>
+ </footer>
+</div>
+
+<script>
+"use strict";
+/* =================== projection =================== */
+const K=100, LON0=-118.3, LAT0=37.8, CX=Math.cos(36.5*Math.PI/180);
+const P=(lon,lat)=>[(lon-LON0)*K*CX,(LAT0-lat)*K];
+const hav=(a,b)=>{const R=3958.8,r=Math.PI/180,dl=(b[1]-a[1])*r,dn=(b[0]-a[0])*r;const s=Math.sin(dl/2)**2+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(s));};
+const TZX=P(-114.05,0)[0];
+const isEast=x=>x>TZX;
+
+/* =================== illustrations =================== */
+let gid=0;
+const SKY={day:['#6fbdf2','#dff3ff'],dawn:['#2c3e74','#f6b07c'],dusk:['#2a2350','#f08a5d'],soft:['#9fd3f7','#f3faff']};
+function sk(k){const [a,b]=Array.isArray(k)?k:SKY[k];const id='sk'+(++gid);return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="400" height="200" fill="url(#${id})"/>`;}
+const rnd=i=>{const x=Math.sin(i*12.9898+78.233)*43758.5453;return x-Math.floor(x);};
+const palm=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})" fill="#2f4f3a"><path d="M-2 0 Q2 -40 0 -70 L4 -70 Q6 -40 3 0Z" fill="#5b4636"/><path d="M2 -70 q-25 -10 -40 5 q20 -14 40 -3Z"/><path d="M2 -70 q25 -12 40 4 q-20 -12 -40 -2Z"/><path d="M2 -70 q-10 -22 -30 -24 q18 4 30 22Z"/><path d="M2 -70 q12 -22 32 -22 q-20 6 -32 20Z"/></g>`;
+const pine=(x,y,s=1,c='#3d6b3a')=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-2" y="-6" width="4" height="8" fill="#5b4636"/><path d="M0 -40 L12 -6 H-12Z" fill="${c}"/></g>`;
+const cotton=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-2" y="-14" width="4" height="16" fill="#6b5240"/><circle cx="0" cy="-22" r="12" fill="#e9b949"/><circle cx="-8" cy="-16" r="8" fill="#d9a23a"/><circle cx="8" cy="-17" r="9" fill="#f0c95a"/></g>`;
+const juniper=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="-8" rx="13" ry="10" fill="#4f6b45"/><ellipse cx="7" cy="-12" rx="8" ry="7" fill="#5f7d52"/></g>`;
+const person=(x,y,c='#333')=>`<g fill="${c}"><circle cx="${x}" cy="${y-13}" r="2.7"/><rect x="${x-2.3}" y="${y-10}" width="4.6" height="10" rx="2"/></g>`;
+const car=(x,y,c='#1a73e8')=>`<g transform="translate(${x} ${y})"><rect x="0" y="-10" width="56" height="13" rx="4" fill="${c}"/><path d="M10 -10 L16 -19 H38 L46 -10Z" fill="${c}"/><path d="M18 -17 H28 V-11 H14Z M30 -17 H37 L42 -11 H30Z" fill="#cfe8ff"/><circle cx="13" cy="4" r="5" fill="#222"/><circle cx="43" cy="4" r="5" fill="#222"/></g>`;
+const ground=(y,c)=>`<rect y="${y}" width="400" height="${200-y}" fill="${c}"/>`;
+const ridge=(c,pts)=>`<path d="M0 200 L${pts} L400 200Z" fill="${c}"/>`;
+
+function storefronts(signs,skyk){
+ const cols=['#8d5a3b','#3f6e8c','#a33c2c','#d9b26a','#6c7f4a','#7b4d6b'];
+ let s=sk(skyk)+`<path d="M0 125 L40 82 L120 88 L170 70 L250 84 L320 66 L400 80 V200 H0Z" fill="#b8502f"/><path d="M0 135 L60 110 L150 118 L230 104 L320 114 L400 106 V200 H0Z" fill="#d06a43"/>`;
+ let x=12;
+ signs.forEach((t,i)=>{const w=58+((i*17)%22),h=48+((i*13)%26),c=cols[i%cols.length],top=160-h;
+  s+=`<rect x="${x}" y="${top}" width="${w}" height="${h}" fill="${c}"/><rect x="${x-3}" y="${top-6}" width="${w+6}" height="8" fill="${c}" opacity=".85"/>`;
+  s+=`<rect x="${x+6}" y="${top+20}" width="${w/2-10}" height="14" fill="#ffe7a8" opacity=".85"/><rect x="${x+w/2+4}" y="${top+20}" width="${w/2-10}" height="14" fill="#ffe7a8" opacity=".85"/><rect x="${x+w/2-7}" y="${160-20}" width="14" height="20" fill="#3b2a20"/>`;
+  if(t) s+=`<rect x="${x+5}" y="${top+4}" width="${w-10}" height="12" fill="#f5ead2"/><text x="${x+w/2}" y="${top+13.5}" font-size="8.5" font-weight="800" text-anchor="middle" fill="#3b2a20" font-family="Georgia,serif">${t}</text>`;
+  x+=w+8;});
+ s+=`<rect y="160" width="400" height="40" fill="#8a8178"/><rect y="158" width="400" height="5" fill="#c9bfae"/>`;
+ return s;
+}
+
+function food(kind){
+ let s=`<defs><linearGradient id="wd${++gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8d5b3a"/><stop offset="1" stop-color="#6b4229"/></linearGradient></defs><rect width="400" height="200" fill="url(#wd${gid})"/>`;
+ for(let i=0;i<6;i++) s+=`<path d="M0 ${20+i*34} Q200 ${10+i*34} 400 ${24+i*34}" stroke="#5a3721" stroke-width="1.5" opacity=".5" fill="none"/>`;
+ s+=`<ellipse cx="200" cy="108" rx="120" ry="76" fill="#000" opacity=".18"/><ellipse cx="200" cy="100" rx="118" ry="74" fill="#fafafa"/><ellipse cx="200" cy="100" rx="96" ry="58" fill="none" stroke="#e8e8e8" stroke-width="3"/>`;
+ const F={
+  pizza:`<path d="M140 60 L270 85 L170 150Z" fill="#f5c34a"/><path d="M140 60 Q200 58 270 85 L265 92 Q200 66 145 68Z" fill="#cf8a3b"/>${[[175,85],[210,92],[185,115],[230,98],[168,128]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="#c2412d"/>`).join('')}<circle cx="200" cy="105" r="3" fill="#3f7d3a"/><circle cx="190" cy="95" r="3" fill="#3f7d3a"/>`,
+  taco:[120,200,280].map(x=>`<path d="M${x-42} 112 Q${x} 40 ${x+42} 112Z" fill="#f2c867"/><path d="M${x-34} 106 Q${x} 58 ${x+34} 106" stroke="#7a3b22" stroke-width="10" fill="none"/><path d="M${x-28} 98 Q${x} 64 ${x+28} 98" stroke="#4caf50" stroke-width="5" fill="none" stroke-dasharray="4 3"/><circle cx="${x-8}" cy="82" r="3" fill="#fff"/><circle cx="${x+10}" cy="86" r="3" fill="#fff"/>`).join('')+`<path d="M190 140 L215 140 L202 160Z" fill="#9ccc65"/>`,
+  burrito:`<rect x="110" y="70" width="170" height="58" rx="29" fill="#f1d9a8"/><path d="M120 92 Q150 80 180 95 T250 92 T275 98" stroke="#4e7d2a" stroke-width="9" fill="none"/><path d="M125 108 Q160 100 190 112 T270 108" stroke="#c0392b" stroke-width="5" fill="none" opacity=".8"/><ellipse cx="290" cy="135" rx="20" ry="12" fill="#7cb342"/>${[0,1,2,3].map(i=>`<path d="M${120+i*14} 140 l12 -6 l6 12Z" fill="#3949ab"/>`).join('')}`,
+  burger:`<path d="M140 92 Q200 30 260 92Z" fill="#d79a44"/><rect x="134" y="92" width="132" height="10" rx="5" fill="#5b8f2e"/><rect x="132" y="100" width="136" height="18" rx="8" fill="#6b3a24"/><rect x="138" y="116" width="124" height="8" fill="#f4c542"/><path d="M138 124 H262 Q262 142 200 142 Q138 142 138 124Z" fill="#d79a44"/>${[160,190,220,240].map(x=>`<ellipse cx="${x}" cy="66" rx="2.5" ry="1.4" fill="#fff6dc"/>`).join('')}<rect x="285" y="80" width="10" height="55" fill="#f2b33d" transform="rotate(12 290 100)"/><rect x="298" y="78" width="10" height="55" fill="#f7c34e" transform="rotate(-6 300 100)"/>`,
+  coffee:`<ellipse cx="170" cy="104" rx="56" ry="40" fill="#fff" stroke="#ddd" stroke-width="2"/><circle cx="170" cy="100" r="34" fill="#a8693c"/><path d="M170 86 C160 74 146 90 170 112 C194 90 180 74 170 86Z" fill="#f3e2cc"/><path d="M226 98 q22 0 18 18 q-4 12 -20 6" stroke="#ddd" stroke-width="6" fill="none"/><rect x="240" y="78" width="70" height="40" rx="6" fill="#e3b26b"/><rect x="242" y="92" width="66" height="7" fill="#7cb342"/><rect x="242" y="99" width="66" height="6" fill="#c0392b"/>`,
+  croissant:`<path d="M120 110 Q160 40 220 70 Q280 40 290 110 Q260 90 220 100 Q180 90 120 110Z" fill="#e0a24a"/>${[150,180,215,250].map(x=>`<path d="M${x} 66 Q${x+8} 90 ${x} 104" stroke="#b5762c" stroke-width="3" fill="none"/>`).join('')}<circle cx="160" cy="140" r="16" fill="#d8854a"/><circle cx="160" cy="140" r="8" fill="#fbeedd"/><circle cx="250" cy="140" r="16" fill="#c97a3e"/>`,
+  fine:`<ellipse cx="190" cy="104" rx="52" ry="22" fill="#7a3b2a"/><ellipse cx="190" cy="98" rx="38" ry="12" fill="#a24b33"/>${[[160,92],[200,86],[220,100],[175,108]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#7cb342"/>`).join('')}<path d="M150 120 Q190 132 232 118" stroke="#e8c26a" stroke-width="3" fill="none"/><path d="M300 40 Q300 80 318 80 Q336 80 336 40Z" fill="#8e1b2e" opacity=".85"/><rect x="316" y="80" width="4" height="40" fill="#ccc"/><ellipse cx="318" cy="122" rx="14" ry="4" fill="#ccc"/>`,
+  steak:`<path d="M130 80 Q160 55 215 68 Q250 78 240 108 Q225 135 170 130 Q120 122 130 80Z" fill="#7b3f25"/>${[0,1,2].map(i=>`<path d="M${150+i*25} 72 L${140+i*25} 125" stroke="#4a2414" stroke-width="5"/>`).join('')}${[[262,84],[282,98],[266,112]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="13" fill="#e8b94a"/>`).join('')}<path d="M170 140 q10 -8 20 0 q10 -8 20 0" stroke="#43a047" stroke-width="7" fill="none" stroke-linecap="round"/>`,
+  comfort:`<path d="M120 90 Q150 62 205 70 Q230 76 225 104 Q210 126 160 122 Q115 116 120 90Z" fill="#c48a45"/><path d="M135 86 Q170 70 210 84 Q215 100 180 104 Q140 106 135 86Z" fill="#f2ead8"/><ellipse cx="250" cy="96" rx="34" ry="22" fill="#f4ecd6"/><path d="M240 92 q10 -8 20 0" stroke="#e3c27a" stroke-width="4" fill="none"/><path d="M180 140 L250 132 L250 150 L180 156Z" fill="#5d3a26"/><path d="M180 140 L250 132 L254 126 L186 134Z" fill="#e6b07a"/>`
+ };
+ return s+(F[kind]||'');
+}
+
+const SC={
+ home:()=>sk('dawn')+`<circle cx="320" cy="150" r="28" fill="#ffd18a" opacity=".9"/><path d="M0 150 Q90 118 190 140 T400 132 V200 H0Z" fill="#5d4a6e"/><rect y="168" width="400" height="32" fill="#34343f"/><path d="M0 185 H400" stroke="#f3c75f" stroke-width="2" stroke-dasharray="14 10"/><rect x="60" y="112" width="92" height="56" fill="#efe3d0"/><path d="M50 114 L106 82 L162 114Z" fill="#a14e3a"/><rect x="98" y="138" width="16" height="30" fill="#6a4a3a"/><rect x="70" y="124" width="18" height="14" fill="#ffd77a"/><rect x="124" y="124" width="18" height="14" fill="#ffd77a"/>`+palm(30,168,.9)+palm(186,168,1.1)+`<path d="M306 172 L392 158 L392 190Z" fill="#fff3b0" opacity=".45"/>`+car(250,180),
+ rest:()=>sk('day')+ridge('#b8a3c4','0 140 L60 100 L120 135 L190 92 L260 138 L330 105 L400 140')+ground(140,'#e7d1a6')+`<rect y="168" width="400" height="32" fill="#7a7a82"/><rect x="120" y="70" width="190" height="14" fill="#d93025"/><rect x="130" y="84" width="6" height="70" fill="#999"/><rect x="294" y="84" width="6" height="70" fill="#999"/><rect x="180" y="120" width="16" height="34" rx="3" fill="#fff" stroke="#888"/><rect x="236" y="120" width="16" height="34" rx="3" fill="#fff" stroke="#888"/><rect x="40" y="60" width="6" height="100" fill="#777"/><rect x="18" y="38" width="50" height="26" rx="4" fill="#fff" stroke="#d93025" stroke-width="3"/><text x="43" y="56" font-size="13" font-weight="800" text-anchor="middle" fill="#d93025">GAS</text>`+car(196,178),
+ sign:()=>sk('day')+ridge('#b9a7c9','0 150 L80 118 L160 140 L250 112 L330 138 L400 120')+ground(150,'#e8d3a5')+palm(50,185,1.2)+palm(350,185,1.05)+`<rect x="186" y="140" width="8" height="46" fill="#9aa0a6"/><rect x="206" y="140" width="8" height="46" fill="#9aa0a6"/><polygon points="200,24 318,86 200,148 82,86" fill="#fff" stroke="#d52b1e" stroke-width="5"/>`+[...'WELCOME'].map((c,i)=>`<circle cx="${152+i*16}" cy="64" r="7.2" fill="#d52b1e"/><text x="${152+i*16}" y="67.5" font-size="9" font-weight="800" text-anchor="middle" fill="#fff">${c}</text>`).join('')+`<text x="200" y="84" font-size="9" fill="#1a5fb4" text-anchor="middle" font-style="italic">to fabulous</text><text x="200" y="107" font-size="22" font-weight="900" fill="#d52b1e" text-anchor="middle">LAS VEGAS</text><text x="200" y="125" font-size="9" fill="#1a5fb4" text-anchor="middle" letter-spacing="2">NEVADA</text><polygon points="200,4 205,16 218,16 208,24 212,36 200,28 188,36 192,24 182,16 195,16" fill="#d52b1e" stroke="#fff" stroke-width="1.5"/>`+person(120,190,'#444')+person(132,190,'#7a4a9e'),
+ garden:()=>{let s=sk(['#fff7e8','#f3dcc0'])+`<path d="M20 200 V70 Q200 -30 380 70 V200" fill="#fdf8ef" stroke="#c8b493" stroke-width="3"/><path d="M70 200 V82 Q200 6 330 82 V200" fill="none" stroke="#dccbae" stroke-width="2"/><path d="M125 200 V96 Q200 48 275 96 V200" fill="none" stroke="#e3d5bc" stroke-width="2"/>`+ground(158,'#cdb38f')+`<path d="M200 38 L250 150 H150Z" fill="#2e7d4f"/><rect x="194" y="150" width="12" height="12" fill="#7a5233"/><polygon points="200,28 204,38 214,38 206,44 209,54 200,48 191,54 194,44 186,38 196,38" fill="#ffc107"/>`;
+  for(let i=0;i<16;i++){const t=rnd(i),u=rnd(i+40);const y=55+t*90,half=(y-38)*50/112;const x=200+(u*2-1)*half*.85;s+=`<circle cx="${x}" cy="${y}" r="3.2" fill="${['#e53935','#ffd54f','#fff','#42a5f5'][i%4]}"/>`;}
+  const pal=['#e53935','#f06292','#ffb300','#ffffff','#ab47bc','#d32f2f','#ff7043'];
+  for(let i=0;i<90;i++){const x=10+rnd(i+7)*380,y=140+rnd(i+300)*58;if(Math.abs(x-200)<58&&y<162)continue;s+=`<circle cx="${x}" cy="${y}" r="${3+rnd(i+600)*4}" fill="${pal[i%pal.length]}"/>`;}
+  return s+`<ellipse cx="60" cy="196" rx="70" ry="12" fill="#558b2f"/><ellipse cx="340" cy="196" rx="70" ry="12" fill="#558b2f"/>`;},
+ fountain:()=>{let s=sk('dusk')+`<path d="M30 140 V72 Q110 40 200 58 Q290 40 370 72 V140Z" fill="#2b3150"/>`;
+  for(let r=0;r<6;r++)for(let c=0;c<26;c++){if(rnd(r*30+c)>.55)s+=`<rect x="${48+c*12}" y="${76+r*10}" width="5" height="4" fill="#ffd98a" opacity=".75"/>`;}
+  s+=`<rect y="138" width="400" height="62" fill="#183059"/>`;
+  for(let i=0;i<9;i++){const x=40+i*40,h=58+(i%3)*24;s+=`<path d="M${x} 140 Q${x+(i%2?7:-7)} ${140-h} ${x} ${130-h}" stroke="#fff" stroke-width="3" fill="none" opacity=".9"/><ellipse cx="${x}" cy="${130-h}" rx="11" ry="7" fill="#fff" opacity=".35"/><rect x="${x-2}" y="146" width="4" height="${h/3}" fill="#fff" opacity=".18"/>`;}
+  return s+`<rect y="186" width="400" height="14" fill="#cbb89a"/>`+[...Array(14)].map((_,i)=>`<rect x="${i*30+6}" y="178" width="6" height="10" fill="#cbb89a"/>`).join('')+person(300,186,'#111')+person(312,186,'#222');},
+ overlook:()=>sk('day')+`<path d="M0 70 L60 60 L130 72 L200 58 L270 70 L340 55 L400 66 V200 H0Z" fill="#e0a27a"/><path d="M0 78 L110 84 L150 200 H0Z" fill="#c4643f"/><path d="M400 72 L280 82 L245 200 H400Z" fill="#b5533a"/><path d="M110 84 L280 82 L245 200 H150Z" fill="#8a9a5b"/><path d="M196 86 Q186 120 200 150 T190 200" stroke="#7fb8c9" stroke-width="3" fill="none"/>`+[100,120,140].map(y=>`<path d="M0 ${y} L${110+(y-84)*.3} ${y+3}" stroke="#000" opacity=".1" stroke-width="2"/><path d="M400 ${y-4} L${280-(y-82)*.3} ${y}" stroke="#000" opacity=".1" stroke-width="2"/>`).join('')+`<path d="M0 165 Q120 150 230 170 L260 200 H0Z" fill="#9e4a2d"/><path d="M10 150 H175" stroke="#5b4636" stroke-width="3"/>`+[20,60,100,140,172].map(x=>`<rect x="${x}" y="150" width="3" height="16" fill="#5b4636"/>`).join('')+person(118,166,'#2b2b2b')+person(132,166,'#3a5f8a')+person(146,167,'#c0392b'),
+ shuttle:()=>sk('day')+`<path d="M100 200 L130 60 L180 40 L230 55 L280 45 L310 200Z" fill="#e3a27c"/><path d="M0 0 H70 Q100 90 130 200 H0Z" fill="#c25734"/><path d="M400 0 H320 Q290 100 275 200 H400Z" fill="#d06c45"/><path d="M150 200 L192 142 H214 L262 200Z" fill="#7c7c84"/><g transform="translate(140 126)"><rect width="122" height="42" rx="7" fill="#fff"/><rect y="28" width="122" height="14" fill="#2e7d32"/>${[0,1,2,3,4].map(i=>`<rect x="${8+i*22}" y="7" width="17" height="15" rx="2" fill="#9cc7e6"/>`).join('')}<circle cx="24" cy="44" r="7" fill="#222"/><circle cx="98" cy="44" r="7" fill="#222"/><text x="61" y="39" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">ZION SHUTTLE</text></g>`+cotton(60,192,1.2)+cotton(335,194,1.1),
+ patriarchs:()=>{let s=sk('day');[[95,70,'#cf6a43'],[205,52,'#d97a4f'],[310,78,'#c96040']].forEach(([c,t,col])=>{s+=`<path d="M${c-85} 200 L${c-30} ${t} Q${c} ${t-28} ${c+30} ${t} L${c+85} 200Z" fill="${col}"/><path d="M${c-30} ${t} Q${c} ${t-28} ${c+30} ${t} L${c+22} ${t+26} Q${c} ${t+18} ${c-22} ${t+26}Z" fill="#f0e1c9"/>`;});
+  return s+`<path d="M0 165 Q200 150 400 168 V200 H0Z" fill="#7d9a5b"/>`+pine(40,190,1.1)+pine(70,192,.8)+pine(350,190,1.2)+cotton(300,196,.9)+person(200,192,'#333');},
+ pools:()=>sk('soft')+`<path d="M0 22 Q200 8 400 26 V200 H0Z" fill="#b65a3b"/><path d="M60 200 Q60 72 200 62 Q340 72 340 200Z" fill="#6a3324"/><path d="M40 72 Q200 30 360 72 Q200 52 40 72Z" fill="#8f4429"/>`+[150,175,200,224,250].map((x,i)=>`<path d="M${x} 62 Q${x+3} 120 ${x-2} 172" stroke="#dff4ff" stroke-width="${1.5+(i%2)}" fill="none" opacity=".85" stroke-dasharray="7 4"/>`).join('')+`<ellipse cx="200" cy="178" rx="122" ry="17" fill="#3f8f7f"/>`+[70,95,120,280,305,330].map((x,i)=>`<ellipse cx="${x}" cy="${68+i%2*4}" rx="12" ry="6" fill="#6b8e3a"/>`).join('')+`<path d="M0 200 Q40 170 70 200Z M330 200 Q365 165 400 200Z" fill="#4f7a32"/>`+person(110,196,'#333')+person(122,196,'#2a6db0'),
+ river:()=>sk('soft')+`<path d="M0 0 H165 Q187 90 150 200 H0Z" fill="#b5533a"/><path d="M400 0 H235 Q213 100 260 200 H400Z" fill="#c5623f"/><path d="M165 0 Q187 90 150 200 H120 Q160 90 140 0Z" fill="#8f3f2a" opacity=".6"/><path d="M200 58 Q188 110 210 140 Q232 175 200 200 H262 Q252 168 226 140 Q206 104 206 58Z" fill="#6fb2c7"/><path d="M152 200 Q176 150 186 110 Q191 80 196 62" stroke="#c9c5bd" stroke-width="11" fill="none"/>`+cotton(120,200,1.2)+cotton(300,196,1.1)+person(182,150,'#333')+person(174,166,'#c0392b'),
+ hoodoo:()=>sk('day')+`<path d="M0 110 L80 95 L170 105 L260 92 L400 104 V200 H0Z" fill="#c96a46"/><path d="M0 140 Q100 125 200 138 T400 132 V200 H0Z" fill="#efe5d6"/><path d="M170 170 Q160 122 178 94 H222 Q240 122 230 170Z" fill="#ead6b8"/><path d="M172 132 Q200 138 228 132" stroke="#d8c09c" stroke-width="2" fill="none"/><ellipse cx="200" cy="90" rx="40" ry="14" fill="#6b4434"/><path d="M162 88 Q200 64 238 88Z" fill="#7d503c"/><path d="M300 172 Q296 142 305 128 H323 Q330 142 326 172Z" fill="#d07a54"/><ellipse cx="314" cy="125" rx="20" ry="7" fill="#5c3a2c"/><path d="M60 175 Q62 160 66 154 H74 Q78 160 78 175Z" fill="#e5cdaa"/><ellipse cx="70" cy="152" rx="11" ry="4" fill="#6b4434"/>`+person(110,182,'#333')+person(123,182,'#2a6db0'),
+ cave:()=>sk('day')+`<path d="M0 32 Q200 2 400 42 V200 H0Z" fill="#e2884f"/>`+[60,80,100,145,165].map(y=>`<path d="M0 ${y} Q200 ${y-24} 400 ${y+6}" stroke="#c96d3c" stroke-width="2" fill="none" opacity=".7"/>`).join('')+`<path d="M120 122 Q130 80 170 78 Q210 80 215 122Z" fill="#5b2c19"/><path d="M230 118 Q240 86 270 84 Q300 88 302 120Z" fill="#6a321d"/><path d="M318 120 Q326 100 344 100 Q362 102 362 122Z" fill="#6a321d"/><path d="M92 123 H380" stroke="#c76a39" stroke-width="5"/><path d="M0 200 L0 150 Q120 128 220 200Z" fill="#f2b47e"/><path d="M112 122 Q100 150 80 176" stroke="#6d4c41" stroke-width="2" fill="none"/>`+person(160,122,'#333')+person(260,120,'#2a6db0'),
+ town:()=>storefronts(['KANAB','CAFE','TRADING','INN','GALLERY'],'dusk')+`<rect x="340" y="120" width="3" height="40" fill="#333"/><circle cx="341" cy="118" r="5" fill="#ffd77a"/>`,
+ western:()=>storefronts(['SALOON','HOTEL','JAIL','BANK','STABLE'],'day')+`<g transform="translate(330 178)"><circle r="18" fill="none" stroke="#5b3a22" stroke-width="4"/>${[0,30,60,90,120,150].map(a=>`<path d="M0 0 L${(18*Math.cos(a*Math.PI/180)).toFixed(1)} ${(18*Math.sin(a*Math.PI/180)).toFixed(1)} M0 0 L${(-18*Math.cos(a*Math.PI/180)).toFixed(1)} ${(-18*Math.sin(a*Math.PI/180)).toFixed(1)}" stroke="#5b3a22" stroke-width="2"/>`).join('')}</g>`,
+ magic:()=>{let s=sk('day')+ridge('#b7a8cc','0 140 L70 100 L140 130 L220 92 L300 128 L360 104 L400 120')+ground(150,'#e9d6ae');const pal=['#ff2e93','#ffd400','#00c2a8','#ff7a00','#2e8bff','#a3e635','#ff4d4d','#c084fc'];
+  for(let i=0;i<7;i++){const x=48+i*50;let y=168;const n=4+(i%3);for(let j=0;j<n;j++){const rw=14+rnd(i*10+j)*7,rh=9+rnd(i*20+j)*4;s+=`<ellipse cx="${x+(rnd(i*7+j)-.5)*5}" cy="${y-rh}" rx="${rw}" ry="${rh}" fill="${pal[(i+j*3)%pal.length]}"/>`;y-=rh*2-2;}}
+  return s+person(30,192,'#333');},
+ mesa:()=>{const id='cp'+(++gid);let s=sk('day')+`<defs><clipPath id="${id}"><path d="M30 200 Q200 10 370 200Z"/></clipPath></defs><path d="M30 200 Q200 10 370 200Z" fill="#efd9bf"/><g clip-path="url(#${id})" stroke="#c9a684" stroke-width="2" fill="none">`;
+  for(let i=0;i<9;i++)s+=`<path d="M0 ${70+i*16} Q200 ${55+i*16} 400 ${70+i*16}"/>`;for(let i=0;i<16;i++)s+=`<path d="M${40+i*22} 200 L${80+i*16} 30"/>`;
+  return s+`</g>`+ground(185,'#8e7a5e')+pine(60,195,1)+pine(340,196,1.2)+juniper(300,198,1.2)+car(150,194,'#c0392b');},
+ tunnel:()=>sk('soft')+`<path d="M0 60 H400 V200 H0Z" fill="#d98a52"/><rect y="48" width="400" height="14" fill="#6f6f78"/><path d="M0 55 H400" stroke="#f3c75f" stroke-width="1.5" stroke-dasharray="10 8"/>`+car(260,58,'#2e7d32')+`<path d="M130 200 V122 Q200 54 270 122 V200Z" fill="#2b1a12"/><path d="M150 200 V130 Q200 76 250 130 V200Z" fill="#3e2619"/><path d="M110 200 Q200 170 290 200Z" fill="#e8b07c"/><path d="M200 168 L262 128 L262 160Z" fill="#fff3b0" opacity=".5"/>`+person(198,182,'#111')+juniper(60,190,1.3)+juniper(345,192,1.1),
+ dunes:()=>sk(['#7cc4f2','#e9f6ff'])+`<path d="M0 120 Q80 92 170 116 T400 108 V200 H0Z" fill="#f7c9b6"/><path d="M0 150 Q110 112 220 146 T400 136 V200 H0Z" fill="#f4b6a0"/><path d="M0 180 Q130 150 260 178 T400 170 V200 H0Z" fill="#ec9c84"/>`+juniper(330,150,1.2)+juniper(60,130,1)+[...Array(9)].map((_,i)=>`<ellipse cx="${140+i*14}" cy="${170-i*4}" rx="2" ry="1.2" fill="#c97b66"/>`).join('')+person(270,140,'#333'),
+ fort:()=>sk('day')+ridge('#c9a07a','0 120 L90 100 L200 112 L300 96 L400 112')+ground(150,'#cdb98f')+`<rect x="115" y="88" width="170" height="74" fill="#b99b7b"/><path d="M115 88 V80 H130 V88 H145 V80 H160 V88 H175 V80 H190 V88 H205 V80 H220 V88 H235 V80 H250 V88 H265 V80 H285 V88Z" fill="#a98b6b"/>`+[100,114,128,142].map(y=>`<path d="M115 ${y} H285" stroke="#8d7255" stroke-width="1"/>`).join('')+`<rect x="186" y="122" width="28" height="40" fill="#5b4030"/><rect x="135" y="104" width="14" height="12" fill="#3e2c22"/><rect x="250" y="104" width="14" height="12" fill="#3e2c22"/><ellipse cx="335" cy="180" rx="48" ry="11" fill="#6fa8c9"/>`+cotton(60,170,1.4)+cotton(350,166,1.1),
+ bend:()=>`<rect width="400" height="200" fill="#dd8f58"/>`+[40,70,100,130].map(r=>`<ellipse cx="200" cy="40" rx="${r*1.4}" ry="${r}" fill="none" stroke="#c97843" stroke-width="3" opacity=".6"/>`).join('')+`<path d="M118 -10 C96 196 304 196 282 -10" stroke="#1f6e66" stroke-width="44" fill="none"/><path d="M118 -10 C96 196 304 196 282 -10" stroke="#2e9a8c" stroke-width="32" fill="none"/><path d="M145 -10 C132 130 268 130 255 -10Z" fill="#c56b3c"/><path d="M160 -10 C152 90 248 90 240 -10Z" fill="#d17a48"/><path d="M0 172 Q200 154 400 176 V200 H0Z" fill="#b65c33"/><path d="M40 165 H360" stroke="#5b4636" stroke-width="2.5"/>`+person(120,178,'#222')+person(134,178,'#2a6db0')+person(260,178,'#c0392b'),
+ kolob:()=>{let s=sk(['#a8d4f5','#eef8ff']);for(let i=0;i<7;i++){const x=10+i*56,t=60+(i%3)*14;s+=`<path d="M${x} 200 L${x+12} ${t} Q${x+26} ${t-22} ${x+40} ${t} L${x+52} 200Z" fill="${i%2?'#a63c27':'#b8452c'}"/><path d="M${x+14} ${t+6} Q${x+26} ${t-18} ${x+38} ${t+6} L${x+33} ${t+10} L${x+26} ${t+2} L${x+19} ${t+10}Z" fill="#fff"/>`;}
+  return s+`<path d="M0 170 Q120 150 240 168 T400 160 V200 H0Z" fill="#6f8f5a"/><path d="M0 186 Q200 176 400 188" stroke="#7c7c84" stroke-width="10" fill="none"/>`+car(240,186,'#1a73e8')+juniper(60,176,1.3)+juniper(330,170,1.1);},
+ pizza:()=>food('pizza'),taco:()=>food('taco'),burrito:()=>food('burrito'),burger:()=>food('burger'),coffee:()=>food('coffee'),croissant:()=>food('croissant'),fine:()=>food('fine'),steak:()=>food('steak'),comfort:()=>food('comfort')
+};
+const scene=k=>`<svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">${(SC[k]||SC.town)()}</svg>`;
+
+/* =================== places =================== */
+const PL={
+ oc:{name:'Orange County (nhà)',short:'Orange County',lon:-117.99,lat:33.759,kind:'main',scene:'home',z:30,icon:'★',
+  chips:['Khởi hành 4:00 AM PT'],notes:['Khởi hành sớm 4:00 sáng giờ Pacific; đi trễ hơn = ít thời gian ở Vegas và tới Kanab muộn hơn.','Đổ đầy xăng. Cooler đủ đá, giữ đồ lạnh ≤ 40°F / 4°C, hạn chế mở nắp.','Lễ Tạ Ơn: đừng trông vào Costco hay mọi quán đều mở.']},
+ lvsign:{name:'Welcome to Fabulous Las Vegas Sign',short:'Bảng Welcome to Las Vegas',lon:-115.1728,lat:36.0821,kind:'main',scene:'sign',z:5,pid:'ChIJO2gyiTTRyIARCZO92id6AkI',
+  chips:['Miễn phí','15–30 phút','Mở 24/7'],notes:['Dừng chụp ảnh nhanh; có bãi đậu nhỏ ngay cạnh bảng.','Đi sớm buổi sáng để ít phải xếp hàng.','Chỉ ghé nếu đậu xe và giao thông thuận tiện.']},
+ conserv:{name:'Bellagio Conservatory & Botanical Gardens',short:'Bellagio Conservatory',lon:-115.1766,lat:36.112,kind:'main',scene:'garden',z:3.5,pid:'ChIJSYKEyTrEyIARJZPSoDxr_MY',
+  chips:['Miễn phí','Mở 24/7','Trang trí lễ 14/11/2026 – 2/1/2027'],notes:['Vườn hoa trong nhà, đổi chủ đề theo mùa; dịp này là trang trí mùa lễ.','Tham quan miễn phí nhưng đậu xe có thể mất phí — kiểm tra giá trước khi để xe.']},
+ fount:{name:'Fountains of Bellagio',short:'Nhạc nước Bellagio',lon:-115.1739,lat:36.1127,kind:'main',scene:'fountain',z:3.5,pid:'ChIJswuaqjrEyIAR1vBx3GxKR-I',
+  chips:['Miễn phí','Lịch ngày lễ thường từ trưa'],notes:['Lịch ngày lễ thường bắt đầu từ trưa — xem 1–2 màn rồi đi.','Ăn trưa nhanh, đi vệ sinh, đổ xăng. Cố gắng rời Vegas khoảng 1:00 PM PT.','Đừng cố đi hết Strip.']},
+ airbnb:{name:'Airbnb ở Kanab',short:'Airbnb Kanab',lon:-112.5263,lat:37.0455,kind:'main',scene:'town',z:9,icon:'🏠',
+  chips:['3 đêm','Giờ Mountain (MT)'],notes:['Utah nhanh hơn CA/NV 1 giờ: 1:00 PM ở Vegas = 2:00 PM ở Kanab.','Tới nơi: chuyển đồ lạnh vào tủ lạnh/tủ đông ngay.','Buổi tối: ăn ở nhà, karaoke, Impostor, game gia đình.']},
+ overlook:{name:'Canyon Overlook Trail',short:'Canyon Overlook',lon:-112.9433,lat:37.2136,kind:'main',scene:'overlook',z:4,pid:'ChIJRXJZaxnDyoARHxb3GOUpEX0',
+  chips:['1.0 dặm khứ hồi','Trung bình','~10 chỗ đậu'],notes:['Đường đá gồ ghề, có đoạn sát vực — chỉ đi khi khô ráo, không đóng băng.','Bãi đậu ngay sau hầm Zion–Mt. Carmel rất nhỏ; kín chỗ thì bỏ qua.','Phí vào cổng: Military Annual Pass dùng được.']},
+ vc:{name:'Zion Canyon Visitor Center',short:'Visitor Center (shuttle)',lon:-112.987,lat:37.2001,kind:'main',scene:'shuttle',z:4,pid:'ChIJRwqsNb3CyoARTXWdRUweYI4',
+  chips:['Shuttle miễn phí','Chuyến đầu 7:00 AM','Chuyến cuối đi 5:00 PM'],notes:['Cố gắng đậu xe & lên shuttle trước 8:00–8:30.','Bãi kín → đậu trả phí hợp lệ ở Springdale + shuttle thị trấn (từ 8:00 AM).','Lịch shuttle 2026: 25/10 – 28/11. Không có shuttle thường lệ 29/11 – 25/12.','Chuyến cuối từ Temple of Sinawava về: 6:15 PM — đừng chờ chuyến cuối.']},
+ court:{name:'Court of the Patriarchs',short:'Court of the Patriarchs',lon:-112.9603,lat:37.2367,kind:'main',scene:'patriarchs',z:6,pid:'ChIJuYdxxU_CyoAR_GKsRLpuXeU',
+  chips:['Vài phút đi bộ','Dễ'],notes:['Điểm chụp ảnh ngay cạnh trạm shuttle, không phải trail dài.','Ba đỉnh núi đá Abraham, Isaac và Jacob.']},
+ emerald:{name:'Lower Emerald Pools',short:'Lower Emerald Pools',lon:-112.9626,lat:37.2571,kind:'main',scene:'pools',z:6,pid:'ChIJVTwKA8vDyoARqX_2DKS6-Qw',
+  chips:['1.2 dặm khứ hồi','Dễ–trung bình','Tuỳ chọn'],notes:['Xuống shuttle ở Zion Lodge rồi đi bộ qua cầu.','Chỉ đi nếu mọi người còn sức và trail không đóng băng/đóng cửa.','Bản nhẹ hơn: Grotto Trail (1.0 dặm) giữa Zion Lodge và Grotto.']},
+ temple:{name:'Temple of Sinawava · Riverside Walk',short:'Riverside Walk',lon:-112.9468,lat:37.2843,kind:'main',scene:'river',z:6,pid:'ChIJXw9sAHTByoARXvzuFVzs4S4',
+  chips:['2.2 dặm khứ hồi','Dễ, đường lát','Trạm shuttle cuối'],notes:['Đi dọc sông Virgin, phần lớn bằng phẳng.','Quay lại ở cuối đường lát — không xuống The Narrows khi nước lạnh, không có đồ chuyên dụng.','Bắt đầu quay về Visitor Center lúc 4:30–5:00 PM.']},
+ toad:{name:'Toadstool Hoodoos',short:'Toadstool Hoodoos',lon:-111.8732,lat:37.1013,kind:'main',scene:'hoodoo',z:6,pid:'ChIJLarEGGz4NIcRmjJtPyuXV_o',
+  chips:['1.5 dặm khứ hồi','Dễ–trung bình','Miễn phí'],notes:['Trailhead cách Kanab ~45 dặm về phía đông trên US-89.','Đường trống trải — mang đủ nước.','Không leo hay chạm vào các khối đá mong manh.','Khi đi lên giữ bên trái; trail ít biển chỉ dẫn.']},
+ downtown:{name:'Trung tâm Kanab (Center St)',short:'Downtown Kanab',lon:-112.529,lat:37.048,kind:'main',scene:'western',z:3,
+  chips:['Ăn trưa','Phương án B'],notes:['Về Kanab ăn trưa và nghỉ ngơi.','Phương án B (an toàn khi thời tiết xấu): dạo phố, cửa hàng địa phương, chụp ảnh, hoặc nghỉ ở Airbnb.']},
+ sandcave:{name:'Kanab Sand Caves',short:'Sand Caves',lon:-112.5605,lat:37.1171,kind:'main',scene:'cave',z:4,pid:'ChIJMYFDkAcrNYcRaiWNUAMcHb8',
+  chips:['~1.2 dặm khứ hồi','Có đoạn leo dốc','Phương án A'],notes:['Lối lên có đoạn leo dốc trên đá/cát.','Chỉ đi khi khô ráo và mọi người tự tin; bỏ qua nếu ướt, đóng băng hoặc gió mạnh.','Không khắc chữ lên đá.']},
+ barstow:{name:'Nghỉ trưa · Barstow',short:'Nghỉ ở Barstow',lon:-117.02,lat:34.895,kind:'main',scene:'rest',z:20,
+  chips:['Xăng · ăn · nghỉ'],notes:['Đổ xăng, ăn trưa, nghỉ chân.','Chủ Nhật sau Lễ Tạ Ơn I-15 thường rất kẹt — dự trù thêm giờ.']},
+ // ---- alternatives
+ magic:{name:'Seven Magic Mountains',lon:-115.271,lat:35.8392,kind:'see',scene:'magic',z:5,days:[0,3],pid:'ChIJU3W6nXc1z4AR3TzVE7_68ZE',chips:['Miễn phí','20–30 phút'],notes:['Ngay cạnh I-15 phía nam Vegas, ~25 phút từ Strip — tiện ghé lúc đi hoặc về.','Không có bóng mát; có nhà vệ sinh di động.']},
+ secret:{name:'Secret Pizza (Cosmopolitan)',lon:-115.1742,lat:36.1098,kind:'food',scene:'pizza',z:3,days:[0],pid:'ChIJH-R5EDHEyIARIcni5p0HcnA',chips:['$','Mở 11 AM'],notes:['Pizza bán theo lát, rẻ so với Strip.','Hành lang không biển hiệu treo bìa đĩa nhạc trong Cosmopolitan; đi bộ ~5 phút từ Bellagio.']},
+ gordo:{name:'Tacos El Gordo',lon:-115.1646,lat:36.1321,kind:'food',scene:'taco',z:4,days:[0],pid:'ChIJuZ22zmzEyIARH1U2pl31Nes',chips:['$','Mở 10 AM'],notes:['Taco nổi tiếng, rẻ; xếp hàng theo loại thịt (adobada, asada…).','Giờ đông có thể chờ 20–30 phút.']},
+ checker:{name:'Checkerboard Mesa',lon:-112.8787,lat:37.2301,kind:'see',scene:'mesa',z:5,days:[1],pid:'ChIJf1AHsyXFyoARkhWOb5LVZt8',chips:['Không cần đi bộ','Cổng Đông Zion'],notes:['Dừng bên đường trên UT-9; vách đá có vân ô cờ.','Phương án thay thế khi Canyon Overlook kín chỗ hoặc trơn băng.']},
+ deepcreek:{name:'Deep Creek Coffee',lon:-112.9999,lat:37.189,kind:'food',scene:'coffee',z:3,days:[1],pid:'ChIJcZ7U56fCyoARcI5EosJJH1s',chips:['$','Mở 6 AM'],notes:['Cà phê rang tại chỗ, sandwich ăn sáng — mua mang vào park.']},
+ oscars:{name:"Oscar's Cafe",lon:-113.0003,lat:37.189,kind:'food',scene:'burrito',z:3,days:[1],pid:'ChIJJ6fqVcHDyoARyFZkN-K1soU',chips:['$$','8 AM – 8 PM'],notes:['Quán ăn sau Zion được đánh giá cao nhất ở Springdale (4.7).','Burrito chile verde, burger; phần rất to — gọi chia nhau.']},
+ brewpub:{name:'Zion Canyon Brew Pub',lon:-112.989,lat:37.1993,kind:'food',scene:'burger',z:3,days:[1],pid:'ChIJ_VoklpfCyoARYQHdAfL-yUk',chips:['$$','Từ 11:30 AM'],notes:['Sát cổng Visitor Center — tiện nhất.','Thường đông, phục vụ chậm.']},
+ dragon:{name:'Belly of the Dragon',lon:-112.685,lat:37.2115,kind:'see',scene:'tunnel',z:5,days:[1,2],pid:'ChIJATWuxWDTyoARxVA_eN-Oj_U',chips:['Miễn phí','Đi bộ ngắn'],notes:['Đường hầm đá dưới US-89, ngay trên đường Kanab ↔ Zion.','Có bậc tụt xuống lúc đầu; mang đèn pin.','Đây là kênh thoát nước — không vào khi có mưa.']},
+ hollywood:{name:'Little Hollywood Land Museum',lon:-112.5344,lat:37.0477,kind:'see',scene:'western',z:3,days:[2],pid:'ChIJE_fRfhjUNIcRZ5WR_d5NNdI',chips:['Quyên góp ~$5','11 AM – 9 PM'],notes:['Bối cảnh phim Western cũ ngay trung tâm Kanab.','Hợp ngày thời tiết xấu hoặc buổi chiều nhẹ nhàng.']},
+ dunes:{name:'Coral Pink Sand Dunes State Park',lon:-112.7144,lat:37.0377,kind:'see',scene:'dunes',z:6,days:[2],pid:'ChIJVTGil4cpy4ARM9DFIqCJLWg',chips:['~$15/xe','Không dùng military pass'],notes:['Đồi cát màu hồng, cách Kanab ~30 phút.','Công viên tiểu bang — bỏ qua nếu muốn giữ ngân sách thấp.']},
+ pipe:{name:'Pipe Spring National Monument',lon:-112.7375,lat:36.8625,kind:'see',scene:'fort',z:5,days:[0,2],pid:'ChIJg9MXxgoxy4ARI-hpvzBCyeQ',chips:['NPS – dùng military pass','8:30 AM – 4:30 PM'],notes:['Pháo đài đá và con suối lịch sử, ~25 phút từ Kanab trên AZ-389.','Nằm gần tuyến Vegas → Kanab — có thể ghé ngày 1 nếu tới sớm.']},
+ horseshoe:{name:'Horseshoe Bend (Page, AZ)',lon:-111.5057,lat:36.8768,kind:'see',scene:'bend',z:5,days:[2],pid:'ChIJCWtWIo1sNIcRAhdPY4lwY0U',chips:['Đậu xe ~$10','~1.5 dặm khứ hồi'],notes:['Đi tiếp ~30 dặm về phía đông sau Toadstool.','Arizona tháng 11 cùng giờ với Utah.','Chỉ nên đi nếu cả nhóm còn sức — chiều về sẽ dài.']},
+ rockingv:{name:'Rocking V Cafe',lon:-112.5305,lat:37.048,kind:'food',scene:'steak',z:3,days:[0,1,2],pid:'ChIJywmCtBjUNIcR7pfwdv0AgPQ',chips:['$$','11:30 AM – 8:30 PM'],notes:['Quán nổi tiếng nhất trung tâm Kanab, mở hằng ngày.','Thử bison, "to die for potatoes", bread pudding.']},
+ sego:{name:'Sego Restaurant',lon:-112.5348,lat:37.0513,kind:'food',scene:'fine',z:3,days:[1,2],pid:'ChIJj0FQPSPUNIcRIc002R9n3tM',chips:['$$$','Chỉ buổi tối','Đóng T5 & CN'],notes:['Nhà hàng fusion được đánh giá ngon nhất Kanab.','Đặt bàn trước cho tối Thứ Sáu hoặc Thứ Bảy.']},
+ houston:{name:"Houston's Trail's End",lon:-112.5278,lat:37.048,kind:'food',scene:'comfort',z:3,days:[1,2],pid:'ChIJ8-ZUCR_UNIcRG2lvbEMkOPI',chips:['$','Từ 3 PM','Đóng CN'],notes:['Món Mỹ kiểu nhà làm, phần to: chicken fried steak, bánh pie.']},
+ bakery:{name:'Kanab Creek Bakery',lon:-112.5335,lat:37.0483,kind:'food',scene:'croissant',z:3,days:[2,3],pid:'ChIJ-TfkhhjUNIcRgCEJMwlK0tY',chips:['$','T6–CN 7 AM – 2 PM'],notes:['Ăn sáng Thứ Bảy/Chủ Nhật.','Đánh giá lẫn lộn: bánh ngon nhưng giá hơi cao, phục vụ chậm.']},
+ kolob:{name:'Kolob Canyons (Zion)',lon:-113.2017,lat:37.4353,kind:'see',scene:'kolob',z:8,days:[3],pid:'ChIJL7N1Y9uPyoARhj_OmpG7-tw',chips:['Military pass','+45–60 phút đi vòng'],notes:['Đường xe 5 dặm từ I-15 lối ra 40, phía bắc St. George; ít người.','Phải đi vòng lên phía bắc — chỉ ghé nếu về sớm và đường không kẹt.']}
+};
+for(const [id,p] of Object.entries(PL)){p.id=id;p.m=P(p.lon,p.lat);}
+const gm=p=>p.pid?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name)}&query_place_id=${p.pid}`:`https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}`;
+
+/* =================== roads =================== */
+const R={};
+R.oc_lv=[[-117.99,33.759],[-117.93,33.79],[-117.87,33.80],[-117.80,33.87],[-117.68,33.87],[-117.57,33.88],[-117.50,33.93],[-117.47,34.06],[-117.44,34.25],[-117.40,34.33],[-117.30,34.52],[-117.17,34.70],[-117.02,34.89],[-116.70,35.00],[-116.40,35.12],[-116.07,35.26],[-115.80,35.40],[-115.53,35.48],[-115.39,35.61],[-115.30,35.75],[-115.25,35.90],[-115.18,36.04],[-115.18,36.10],[-115.15,36.17]];
+R.lv_hur=[[-115.15,36.17],[-115.05,36.24],[-114.85,36.40],[-114.62,36.56],[-114.40,36.68],[-114.20,36.76],[-114.07,36.80],[-113.90,36.88],[-113.76,36.95],[-113.62,37.05],[-113.58,37.10],[-113.476,37.137]];
+R.i15n=[[-113.476,37.137],[-113.36,37.24],[-113.30,37.30],[-113.24,37.38],[-113.21,37.44],[-113.15,37.55],[-113.08,37.68],[-112.98,37.85]];
+R.ut9w=[[-113.476,37.137],[-113.38,37.16],[-113.29,37.175]];
+R.hur_kanab=[[-113.29,37.175],[-113.20,37.12],[-113.08,37.05],[-112.98,37.00],[-112.85,36.97],[-112.74,36.90],[-112.62,36.93],[-112.53,36.95],[-112.53,37.0],[-112.527,37.04]];
+R.ut9z=[[-113.29,37.175],[-113.20,37.18],[-113.15,37.19],[-113.06,37.17],[-113.0,37.185],[-112.99,37.19],[-112.987,37.2001],[-112.975,37.208],[-112.9615,37.2135],[-112.958,37.2105],[-112.950,37.205],[-112.955,37.208],[-112.952,37.212],[-112.9433,37.2136],[-112.92,37.22],[-112.879,37.230],[-112.84,37.235],[-112.78,37.24],[-112.68,37.234]];
+R.us89n=[[-112.527,37.04],[-112.527,37.06],[-112.545,37.08],[-112.5605,37.1171],[-112.58,37.135],[-112.64,37.17],[-112.685,37.2115],[-112.68,37.234],[-112.62,37.32],[-112.56,37.42],[-112.48,37.55],[-112.44,37.85]];
+R.us89e=[[-112.527,37.04],[-112.50,37.04],[-112.43,37.04],[-112.37,37.05],[-112.25,37.08],[-112.12,37.08],[-112.00,37.10],[-111.92,37.10],[-111.8732,37.1013],[-111.78,37.09],[-111.66,37.08],[-111.55,37.01],[-111.49,36.94],[-111.46,36.91],[-111.48,36.86],[-111.55,36.70],[-111.62,36.55],[-111.65,36.3]];
+R.us89a=[[-112.53,36.95],[-112.40,36.85],[-112.22,36.71],[-112.0,36.75],[-111.80,36.80],[-111.64,36.82],[-111.62,36.70]];
+R.scenic=[[-112.9615,37.2135],[-112.962,37.225],[-112.9603,37.2367],[-112.958,37.244],[-112.957,37.2507],[-112.956,37.259],[-112.951,37.270],[-112.951,37.278],[-112.9468,37.2843]];
+R.strip=[[-115.1728,36.0821],[-115.1727,36.10],[-115.1740,36.111],[-115.1739,36.1127],[-115.171,36.13],[-115.155,36.16],[-115.14,36.17]];
+R.i40=[[-117.02,34.89],[-116.5,34.75],[-115.9,34.62],[-115.4,34.78],[-114.6,34.84],[-114.0,35.05],[-113.5,35.25],[-113.0,35.25]];
+R.i10=[[-118.6,34.03],[-118.24,34.05],[-117.6,34.06],[-117.2,34.03],[-116.9,33.93],[-116.5,33.82],[-116.2,33.72],[-115.5,33.65],[-114.6,33.6]];
+R.us93=[[-115.0,36.0],[-114.74,36.0],[-114.4,35.6],[-114.05,35.19],[-113.6,34.9]];
+R.coral=[[-112.58,37.135],[-112.65,37.10],[-112.70,37.06],[-112.714,37.038]];
+R.kolob=[[-113.215,37.435],[-113.2017,37.4353]];
+R.pipe=[[-112.738,36.905],[-112.7375,36.8625]];
+R.i5=[[-118.24,34.05],[-118.0,33.92],[-117.85,33.79],[-117.67,33.58],[-117.4,33.2]];
+R.ca91=[[-118.3,33.87],[-117.99,33.86],[-117.80,33.87]];
+
+const WATER={
+ ocean:[[-119.5,34.06],[-118.6,34.04],[-118.5,34.03],[-118.42,33.93],[-118.40,33.85],[-118.42,33.77],[-118.30,33.71],[-118.18,33.75],[-118.08,33.72],[-117.99,33.66],[-117.88,33.60],[-117.78,33.54],[-117.68,33.46],[-117.6,33.39],[-117.45,33.28],[-117.3,33.1],[-117.2,32.5],[-119.5,32.5]],
+ mead:[[-114.82,36.10],[-114.74,36.03],[-114.62,36.06],[-114.45,36.10],[-114.30,36.06],[-114.13,36.05],[-114.05,36.10],[-114.10,36.16],[-114.35,36.15],[-114.43,36.20],[-114.38,36.30],[-114.36,36.45],[-114.42,36.46],[-114.46,36.27],[-114.55,36.16],[-114.70,36.13],[-114.80,36.15]],
+ powell:[[-111.485,36.937],[-111.45,36.97],[-111.38,37.02],[-111.28,37.03],[-111.2,37.08],[-111.13,37.07],[-111.06,37.13],[-111.0,37.2],[-110.9,37.25],[-110.95,37.28],[-111.05,37.18],[-111.12,37.11],[-111.21,37.10],[-111.3,37.06],[-111.4,37.04],[-111.47,36.97]]
+};
+const RIVERS={
+ colorado:[[-111.485,36.937],[-111.51,36.88],[-111.59,36.865],[-111.75,36.7],[-111.85,36.5],[-112.1,36.3],[-112.5,36.25],[-112.9,36.3],[-113.2,36.15],[-113.6,36.2],[-113.9,36.05],[-114.05,36.1]],
+ coloradoS:[[-114.74,36.02],[-114.68,35.6],[-114.57,35.2],[-114.6,35.0],[-114.5,34.7],[-114.3,34.45],[-114.45,34.1],[-114.53,33.9],[-114.5,33.4]],
+ virgin:[[-114.38,36.47],[-114.2,36.62],[-114.07,36.8],[-113.75,36.95],[-113.58,37.07],[-113.3,37.17],[-113.06,37.165],[-112.99,37.188],[-112.966,37.215],[-112.957,37.25],[-112.947,37.284],[-112.94,37.31]]
+};
+const AREAS=[
+ {c:'#ebe6dc',p:[[-118.5,34.25],[-118.0,34.2],[-117.2,34.15],[-117.2,33.85],[-117.6,33.6],[-117.95,33.63],[-118.4,33.8],[-118.55,34.0]]},
+ {c:'#ebe6dc',p:[[-115.33,36.32],[-115.0,36.30],[-114.95,36.0],[-115.2,35.98],[-115.35,36.1]]},
+ {c:'#e4dccb',p:[[-118.2,34.36],[-117.7,34.42],[-117.0,34.26],[-116.7,34.1],[-117.2,34.08],[-117.8,34.24],[-118.3,34.27]]},
+ {c:'#f4e2d2',p:[[-113.45,37.8],[-113.25,37.3],[-113.1,37.0],[-112.6,36.83],[-111.9,36.72],[-111.2,36.75],[-110.8,37.0],[-110.8,37.8]]},
+ {c:'#d7ecca',p:[[-113.21,37.51],[-113.08,37.53],[-113.0,37.47],[-112.95,37.40],[-112.86,37.36],[-112.83,37.28],[-112.86,37.21],[-112.93,37.18],[-113.02,37.15],[-113.08,37.17],[-113.10,37.25],[-113.16,37.30],[-113.24,37.38],[-113.26,37.46]]},
+ {c:'#dfeed3',p:[[-112.05,37.12],[-111.75,37.04],[-111.3,37.0],[-111.0,37.1],[-110.9,37.5],[-111.2,37.8],[-112.0,37.8],[-112.15,37.5]]},
+ {c:'#dfeed3',p:[[-112.1,36.98],[-111.85,37.0],[-111.6,36.92],[-111.62,36.80],[-111.9,36.78],[-112.15,36.86]]},
+ {c:'#d7ecca',p:[[-113.3,36.25],[-112.9,36.15],[-112.4,36.1],[-112.0,36.0],[-111.75,36.05],[-111.8,36.4],[-112.1,36.45],[-112.6,36.45],[-113.0,36.4],[-113.35,36.35]]},
+ {c:'#dfeed3',p:[[-116.0,35.15],[-115.6,35.45],[-115.2,35.45],[-115.0,35.1],[-115.3,34.85],[-115.8,34.9]]},
+ {c:'#dfeed3',p:[[-114.62,36.40],[-114.45,36.40],[-114.45,36.49],[-114.62,36.49]]},
+ {c:'#dfeed3',p:[[-112.74,37.08],[-112.69,37.08],[-112.69,37.02],[-112.74,37.02]]}
+];
+const BORDERS=[
+ [[-118.6,38.2],[-114.633,35.0]],
+ [[-114.633,35.0],[-114.57,34.8],[-114.35,34.45],[-114.13,34.27],[-114.43,34.08],[-114.53,33.93],[-114.50,33.3]],
+ [[-114.633,35.0],[-114.57,35.4],[-114.67,35.7],[-114.74,36.02],[-114.45,36.12],[-114.05,36.19],[-114.05,38.2]],
+ [[-114.05,37.0],[-110.5,37.0]]
+];
+const TZLINE=[[-114.05,38.2],[-114.05,36.19],[-114.45,36.12],[-114.74,36.02],[-114.67,35.7],[-114.57,35.4],[-114.633,35.0],[-114.57,34.8],[-114.35,34.45],[-114.13,34.27],[-114.43,34.08],[-114.53,33.93],[-114.50,33.3]];
+
+const LABELS=[
+ ['CALIFORNIA',-116.9,34.45,0,'state'],['NEVADA',-115.9,37.35,0,'state'],['UTAH',-112.1,37.62,0,'state'],['ARIZONA',-113.2,35.7,0,'state'],
+ ['Thái Bình Dương',-118.75,33.55,1,'water'],['Lake Mead',-114.35,36.02,2,'water'],['Lake Powell',-111.2,37.15,2,'water'],['Sông Colorado',-112.6,36.2,3,'water'],['Sông Virgin',-113.5,37.03,3,'water'],
+ ['Zion National Park',-113.12,37.36,2,'park'],['Grand Canyon NP',-112.55,36.4,2,'park'],['Mojave National Preserve',-115.55,35.18,2,'park'],['Grand Staircase–Escalante',-111.55,37.45,2,'park'],['Vermilion Cliffs',-111.88,36.9,3,'park'],['Valley of Fire',-114.53,36.52,3,'park'],['Coral Pink Sand Dunes',-112.72,37.1,3,'park'],
+ ['Los Angeles',-118.24,34.05,1],['Riverside',-117.40,33.96,2],['San Bernardino',-117.29,34.11,2],['Victorville',-117.29,34.54,2],['Barstow',-117.05,34.92,2],['Baker',-116.07,35.27,2],['Primm',-115.39,35.61,3],['Las Vegas',-115.14,36.19,1],['Henderson',-114.98,36.04,3],['Mesquite',-114.07,36.80,2],['St. George',-113.58,37.10,1],['Hurricane',-113.29,37.175,2],['Springdale',-112.998,37.18,3],['Cedar City',-113.06,37.68,2],['Kanab',-112.527,37.06,1],['Fredonia',-112.53,36.95,3],['Colorado City',-112.98,36.99,3],['Mt. Carmel Jct',-112.68,37.23,3],['Page',-111.46,36.91,2],['Big Water',-111.66,37.08,3],['Needles',-114.61,34.85,3],['Kingman',-114.05,35.19,2]
+];
+const SHIELDS=[['I-15','i',-116.6,35.06,1],['I-15','i',-114.62,36.56,1],['I-15','i',-113.25,37.38,2],['I-40','i',-115.9,34.62,2],['I-10','i',-116.5,33.82,2],['UT-9','st',-113.12,37.18,3],['UT-59','st',-113.12,37.07,3],['AZ-389','st',-112.78,36.93,3],['US-89','us',-112.62,37.16,3],['US-89','us',-112.15,37.08,2],['US-89A','us',-112.3,36.78,3],['US-93','us',-114.5,35.7,3]];
+
+/* =================== days =================== */
+const pt=(h,m,tz)=>h*60+m-(tz==='MT'?60:0);
+const rev=a=>a.slice().reverse();
+const slice=(a,from,to)=>{const i=a.findIndex(p=>p[0]===from[0]&&p[1]===from[1]);const j=a.findIndex(p=>p[0]===to[0]&&p[1]===to[1]);return i<=j?a.slice(i,j+1):a.slice(j,i+1).reverse();};
+const LL=id=>[PL[id].lon,PL[id].lat];
+const vcRoad=[-112.987,37.2001], ovRoad=[-112.9433,37.2136], cj=[-112.9615,37.2135], kanabJ=[-112.527,37.04];
+const kanab_overlook=[LL('airbnb'),...slice(R.us89n,kanabJ,[-112.68,37.234]),...rev(slice(R.ut9z,ovRoad,[-112.68,37.234])).slice(0)];
+const overlook_vc=slice(R.ut9z,ovRoad,vcRoad);
+const canyonUp=[...slice(R.ut9z,vcRoad,cj),...R.scenic.slice(1)];
+const lv_kanab=[...R.lv_hur,...R.ut9w.slice(1),...R.hur_kanab.slice(1),LL('airbnb')];
+
+const DAYS=[
+ {n:1,date:'Thứ Năm 26/11 · Lễ Tạ Ơn',title:'Orange County → Las Vegas → Kanab',color:'#1a73e8',
+  stops:[{id:'oc',dep:pt(4,0)},{id:'lvsign',arr:pt(9,0),dep:pt(9,30)},{id:'conserv',arr:pt(9,50),dep:pt(11,0)},{id:'fount',arr:pt(11,8),dep:pt(13,0)},{id:'airbnb',arr:pt(17,0,'MT')}],
+  legs:[[['d',[...R.oc_lv.slice(0,22),[-115.1728,36.0821]]]],[['d',[[-115.1728,36.0821],[-115.1727,36.10],[-115.1740,36.111],LL('conserv')]]],[['w',[LL('conserv'),LL('fount')]]],[['d',[LL('fount'),[-115.183,36.116],[-115.18,36.13],...lv_kanab]]]],
+  notes:['Không cố đi hết Strip — chọn khu Bellagio + bảng Welcome nếu đậu xe tiện.','Tham quan miễn phí không có nghĩa là đậu xe miễn phí.','Đổ đầy xăng trước khi rời Vegas; Vegas → Kanab khoảng 3–3,5 giờ, chừa thêm thời gian.','Ngày lễ: gọi trước xác nhận quán ăn còn mở.'],
+  dir:['oc','lvsign','fount','airbnb']},
+ {n:2,date:'Thứ Sáu 27/11',title:'Vườn quốc gia Zion',color:'#e8710a',
+  stops:[{id:'airbnb',dep:pt(6,0,'MT')},{id:'overlook',arr:pt(7,15,'MT'),dep:pt(8,0,'MT')},{id:'vc',arr:pt(8,20,'MT'),dep:pt(8,40,'MT')},{id:'court',arr:pt(8,55,'MT'),dep:pt(9,15,'MT')},{id:'emerald',arr:pt(9,35,'MT'),dep:pt(10,50,'MT')},{id:'temple',arr:pt(11,15,'MT'),dep:pt(14,45,'MT')},{id:'vc',arr:pt(15,25,'MT'),dep:pt(15,55,'MT')},{id:'airbnb',arr:pt(17,10,'MT')}],
+  legs:[[['d',kanab_overlook]],[['d',overlook_vc]],[['s',slice(canyonUp,vcRoad,LL('court'))]],[['s',slice(canyonUp,LL('court'),[-112.957,37.2507])],['w',[[-112.957,37.2507],[-112.9605,37.2535],LL('emerald')]]],[['w',[LL('emerald'),[-112.9605,37.2535],[-112.957,37.2507]]],['s',slice(canyonUp,[-112.957,37.2507],LL('temple'))]],[['s',rev(canyonUp)]],[['d',[...rev(overlook_vc),...rev(kanab_overlook)]]]],
+  notes:['Shuttle thường lệ chạy đến hết 28/11 — hôm nay là ngày tốt nhất để vào Zion.','Gợi ý: Canyon Overlook (nếu an toàn) + Riverside Walk + Court of the Patriarchs; thêm Lower Emerald Pools nếu còn sức.','Không đi Angels Landing (cần permit) và The Narrows.','Trail/đường đóng băng → bỏ Canyon Overlook, chọn đường lát; làm theo hướng dẫn kiểm lâm.'],
+  dir:['airbnb','overlook','vc','airbnb']},
+ {n:3,date:'Thứ Bảy 28/11',title:'Quanh Kanab — tham quan miễn phí',color:'#188038',
+  stops:[{id:'airbnb',dep:pt(8,10,'MT')},{id:'toad',arr:pt(9,0,'MT'),dep:pt(11,0,'MT')},{id:'downtown',arr:pt(11,50,'MT'),dep:pt(13,0,'MT')},{id:'sandcave',arr:pt(13,15,'MT'),dep:pt(14,45,'MT')},{id:'airbnb',arr:pt(15,0,'MT')}],
+  legs:[[['d',[LL('airbnb'),...slice(R.us89e,kanabJ,LL('toad'))]]],[['d',[...slice(R.us89e,LL('toad'),kanabJ),[-112.527,37.046],LL('downtown')]]],[['d',[LL('downtown'),...slice(R.us89n,[-112.527,37.06],LL('sandcave'))]]],[['d',[...slice(R.us89n,LL('sandcave'),kanabJ),LL('airbnb')]]]],
+  notes:['Ngày linh hoạt: có mưa, tuyết hoặc băng thì chọn phương án đường lát / trong thị trấn.','Không vào slot canyon, khe hẹp hay đường hầm thoát nước khi có mưa gần đó hoặc ở thượng nguồn (lũ quét).','Xe 2WD: tránh đường đất Cottonwood Canyon / House Rock Valley.','Coral Pink Sand Dunes là công viên tiểu bang — không dùng military pass.'],
+  dir:['airbnb','toad','downtown','sandcave','airbnb']},
+ {n:4,date:'Chủ Nhật 29/11',title:'Kanab → Orange County',color:'#a142f4',
+  stops:[{id:'airbnb',dep:pt(7,30,'MT')},{id:'barstow',arr:pt(13,15),dep:pt(14,0)},{id:'oc',arr:pt(16,45)}],
+  legs:[[['d',[...rev(lv_kanab),...rev(R.oc_lv.slice(12,23))]]],[['d',rev(R.oc_lv.slice(0,13))]]],
+  notes:['Ăn sáng, dọn đồ, trả phòng; mục tiêu xuất phát 7:00–8:00 MT.','Không thêm trail lớn hay đường vòng dài.','Chủ Nhật sau lễ đường rất đông — chuẩn bị đồ ăn, xăng và nghỉ chân.'],
+  dir:['airbnb','barstow','oc']}
+];
+const MODE_TXT={d:'🚗',s:'🚌',w:'🚶'};
+DAYS.forEach((D,di)=>{
+ D.legObjs=D.legs.map(segs=>{const pts=[],ll=[],modes=[];
+  segs.forEach(([mode,arr])=>{arr.forEach((q,k)=>{if(pts.length&&k===0){const l=ll[ll.length-1];if(l[0]===q[0]&&l[1]===q[1])return;}if(pts.length)modes.push(mode);pts.push(P(q[0],q[1]));ll.push(q);});});
+  const cum=[0];let miles=0;for(let i=1;i<pts.length;i++){cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));miles+=hav(ll[i-1],ll[i]);}
+  const mainMode=modes.includes('d')?'d':modes.includes('s')?'s':'w';
+  return {segs,pts,modes,cum,len:cum[cum.length-1],miles:miles*(mainMode==='d'?1.12:1.05),mode:mainMode};});
+ D.start=D.stops[0].dep-20;D.end=D.stops[D.stops.length-1].arr+20;
+ D.driveMiles=D.legObjs.filter(l=>l.mode==='d').reduce((a,l)=>a+l.miles,0);
+ D.driveMin=D.legObjs.reduce((a,l,i)=>a+(l.mode==='d'?D.stops[i+1].arr-D.stops[i].dep:0),0);
+ const xs=[],ys=[];D.legObjs.forEach(l=>l.pts.forEach(p=>{xs.push(p[0]);ys.push(p[1]);}));
+ D.bbox=[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
+ // numbering
+ D.num={};let n=0;D.stops.forEach(s=>{if(D.num[s.id]==null){D.num[s.id]=PL[s.id].icon||String(++n);}});
+});
+const ALLBOX=(()=>{const b=[1e9,1e9,-1e9,-1e9];DAYS.forEach(D=>{b[0]=Math.min(b[0],D.bbox[0]);b[1]=Math.min(b[1],D.bbox[1]);b[2]=Math.max(b[2],D.bbox[2]);b[3]=Math.max(b[3],D.bbox[3]);});b[2]=Math.max(b[2],PL.horseshoe.m[0]);return b;})();
+
+/* =================== draw base =================== */
+const NS='http://www.w3.org/2000/svg';
+const dpath=(arr,close)=>arr.map((q,i)=>{const p=P(q[0],q[1]);return (i?'L':'M')+p[0].toFixed(2)+' '+p[1].toFixed(2);}).join('')+(close?'Z':'');
+const dpts=pts=>pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join('');
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e;}
+const NSS={'vector-effect':'non-scaling-stroke'};
+(function drawBase(){
+ const g=document.getElementById('base');
+ el('rect',{x:-2000,y:-2000,width:5000,height:5000,fill:'#f2efe9'},g);
+ AREAS.forEach(a=>el('path',{d:dpath(a.p,true),fill:a.c},g));
+ Object.values(WATER).forEach(w=>el('path',{d:dpath(w,true),fill:'#aadaff',...NSS,stroke:'#9ccff5','stroke-width':1},g));
+ Object.values(RIVERS).forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#aadaff','stroke-width':2.2,'stroke-linejoin':'round',...NSS},g));
+ BORDERS.forEach(b=>el('path',{d:dpath(b),fill:'none',stroke:'#9aa0a6','stroke-width':1.3,'stroke-dasharray':'7 4 2 4',...NSS},g));
+ el('path',{id:'tzline',d:dpath(TZLINE),fill:'none',stroke:'#ab47bc','stroke-width':2,'stroke-dasharray':'2 5','stroke-linecap':'round',opacity:.8,...NSS},g);
+ const minor=[R.coral,R.kolob,R.pipe,R.strip,R.scenic,R.ca91];
+ const hw=[R.us89n,R.us89e,R.us89a,R.ut9z,R.ut9w,R.hur_kanab,R.us93];
+ const inter=[R.oc_lv,R.lv_hur,R.i15n,R.i40,R.i10,R.i5];
+ minor.forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#cfcabe','stroke-width':3.6,...NSS,'stroke-linejoin':'round','stroke-linecap':'round'},g));
+ hw.forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#e2c48c','stroke-width':4.6,...NSS,'stroke-linejoin':'round','stroke-linecap':'round'},g));
+ inter.forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#e6a23c','stroke-width':6,...NSS,'stroke-linejoin':'round','stroke-linecap':'round'},g));
+ minor.forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#fff','stroke-width':2.2,...NSS,'stroke-linejoin':'round','stroke-linecap':'round'},g));
+ hw.forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#fde7a6','stroke-width':3,...NSS,'stroke-linejoin':'round','stroke-linecap':'round'},g));
+ inter.forEach(r=>el('path',{d:dpath(r),fill:'none',stroke:'#fcd380','stroke-width':4,...NSS,'stroke-linejoin':'round','stroke-linecap':'round'},g));
+ // routes
+ const rg=document.getElementById('routes');
+ DAYS.forEach((D,di)=>{const dg=el('g',{id:'r'+di,class:'route'},rg);
+  D.legObjs.forEach(L=>{let start=0;L.segs.forEach(([mode,arr])=>{const cnt=arr.length;});
+   // draw per contiguous mode run
+   let i=0;while(i<L.modes.length){let j=i;while(j<L.modes.length&&L.modes[j]===L.modes[i])j++;const pts=L.pts.slice(i,j+1),m=L.modes[i];
+    el('path',{d:dpts(pts),fill:'none',stroke:'#fff','stroke-width':m==='w'?6:9,'stroke-linejoin':'round','stroke-linecap':'round',...NSS,class:'casing'},dg);
+    el('path',{d:dpts(pts),fill:'none',stroke:D.color,'stroke-width':m==='w'?3.4:5,'stroke-linejoin':'round','stroke-linecap':'round','stroke-dasharray':m==='s'?'9 6':m==='w'?'0.1 7':'none',...NSS,class:'line'},dg);
+    i=j;}
+  });});
+})();
+
+/* =================== overlay =================== */
+const wrap=document.getElementById('mapwrap'),svg=document.getElementById('map'),ov=document.getElementById('overlay');
+let W=1,H=1;const cam={x:300,y:250,w:700},tgt={x:300,y:250,w:700};
+function resize(){const r=wrap.getBoundingClientRect();W=r.width||1;H=r.height||1;}
+const vb=()=>{const h=cam.w*H/W;return [cam.x-cam.w/2,cam.y-h/2,cam.w,h];};
+let VB=vb();
+const scr=m=>[(m[0]-VB[0])/VB[2]*W,(m[1]-VB[1])/VB[3]*H];
+
+const labelEls=LABELS.map(([t,lon,lat,rank,cls])=>{const e=document.createElement('div');e.className='city '+(cls||'')+(rank===1&&!cls?' r1':'');e.textContent=t;ov.appendChild(e);return {e,m:P(lon,lat),rank,cls};});
+const tzLbl=document.createElement('div');tzLbl.className='city tz';tzLbl.textContent='◀ giờ Pacific | giờ Mountain (+1 giờ) ▶';ov.appendChild(tzLbl);
+const shieldEls=SHIELDS.map(([t,c,lon,lat,rank])=>{const e=document.createElement('div');e.className='shield '+c;e.textContent=t;ov.appendChild(e);return {e,m:P(lon,lat),rank};});
+
+const pinEls={};
+for(const p of Object.values(PL)){
+ const e=document.createElement('div');e.className='pin '+(p.kind==='main'?'main':'alt');
+ if(p.kind==='main') e.innerHTML=`<div class="drop"><b></b></div><div class="lbl"></div><div class="badge" hidden></div>`;
+ else {e.innerHTML=`<div class="dot">${p.kind==='food'?'🍽️':'📸'}</div><div class="lbl">${p.name}</div><div class="badge" hidden></div>`;e.style.setProperty('--c',p.kind==='food'?'#d93025':'#e37400');}
+ e.addEventListener('click',ev=>{ev.stopPropagation();const cl=e._cluster;if(cl&&cl.length>1&&!e.classList.contains('expanded')){fitIds(cl.map(q=>q.id),1.8,true);return;}openCard(p.id,{fly:true});});
+ ov.appendChild(e);pinEls[p.id]={e,p,drop:e.querySelector('.drop b'),lbl:e.querySelector('.lbl'),badge:e.querySelector('.badge')};
+}
+const carEl=document.createElement('div');carEl.className='car';carEl.innerHTML='<div class="ring"></div><div class="arr"></div><div class="body">🚗</div>';ov.appendChild(carEl);
+
+/* =================== state =================== */
+const S={view:-1,day:0,t:0,playing:false,speed:1,follow:true,auto:true,all:false,layers:{see:true,food:true,tz:true},cardId:null,cardAuto:false,lastStop:null};
+const $=id=>document.getElementById(id);
+const fmt=m=>{m=((Math.round(m)%1440)+1440)%1440;let h=Math.floor(m/60),mm=m%60;const ap=h<12?'AM':'PM';h=h%12||12;return `${h}:${String(mm).padStart(2,'0')} ${ap}`;};
+const local=(t,x)=>t+(isEast(x)?60:0);
+const tzName=x=>isEast(x)?'MT':'PT';
+
+function visibleMain(id){if(S.view<0)return true;return DAYS[S.view].num[id]!=null;}
+function pinColor(id){if(S.view>=0)return DAYS[S.view].color;for(const D of DAYS)if(D.num[id]!=null)return D.color;return '#5f6368';}
+function pinNum(id){if(S.view>=0)return DAYS[S.view].num[id];if(PL[id].icon)return PL[id].icon;for(const D of DAYS)if(D.num[id]!=null)return D.num[id];return '';}
+function refreshPins(){for(const id in pinEls){const o=pinEls[id];if(o.p.kind!=='main')continue;o.e.style.setProperty('--c',id==='airbnb'||id==='oc'?'#3c4043':pinColor(id));o.drop.textContent=pinNum(id);o.lbl.textContent=o.p.short||o.p.name;}}
+
+/* =================== simulation =================== */
+const ease=f=>.65*f+.35*(f*f*(3-2*f));
+function along(L,f){const target=f*L.len;let i=1;while(i<L.cum.length-1&&L.cum[i]<target)i++;const a=L.pts[i-1],b=L.pts[i];const seg=(L.cum[i]-L.cum[i-1])||1;const u=Math.min(1,Math.max(0,(target-L.cum[i-1])/seg));return {p:[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u],ang:Math.atan2(b[1]-a[1],b[0]-a[0]),mode:L.modes[i-1]};}
+function carAt(D,t){const st=D.stops;
+ for(let i=0;i<st.length-1;i++){if(t<st[i].dep)return {p:PL[st[i].id].m,stop:i};if(t<st[i+1].arr){const f=(t-st[i].dep)/(st[i+1].arr-st[i].dep);const r=along(D.legObjs[i],ease(f));return {...r,leg:i,f};}}
+ return {p:PL[st[st.length-1].id].m,stop:st.length-1};}
+
+/* =================== camera =================== */
+function fitBox(b,pad=1.25,smooth=true){const bw=Math.max(b[2]-b[0],.5),bh=Math.max(b[3]-b[1],.5);const cardW=(!$('card').hidden&&W>880)?352:0;const effW=W-cardW;
+ let w=Math.max(bw,bh*W/H)*pad;w=w*W/Math.max(200,effW);const cx=(b[0]+b[2])/2+cardW/2*w/W;
+ const T={x:cx,y:(b[1]+b[3])/2,w:Math.min(Math.max(w,1.6),1200)};Object.assign(tgt,T);if(!smooth)Object.assign(cam,T);}
+function fitIds(ids,pad=1.6,smooth=true){const xs=ids.map(i=>PL[i].m[0]),ys=ids.map(i=>PL[i].m[1]);fitBox([Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)],pad,smooth);if(ids.length===1)tgt.w=PL[ids[0]].z*1.6;}
+function zoomAt(f,px,py){const v=vb();const mx=v[0]+px/W*v[2],my=v[1]+py/H*v[3];const nw=Math.min(Math.max(cam.w*f,1.2),1400);cam.x=mx-(px/W-.5)*nw;cam.y=my-(py/H-.5)*nw*H/W;cam.w=nw;Object.assign(tgt,{x:cam.x,y:cam.y,w:cam.w});}
+function stopFollow(){if(S.follow){S.follow=false;$('follow').checked=false;}}
+
+/* =================== interaction =================== */
+const pointers=new Map();
+wrap.addEventListener('pointerdown',e=>{if(e.target.closest('.pin,.card,.ctl,.hud,.layers'))return;wrap.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});stopFollow();Object.assign(tgt,{x:cam.x,y:cam.y,w:cam.w});});
+wrap.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const prev=pointers.get(e.pointerId),cur={x:e.clientX,y:e.clientY};
+ if(pointers.size===1){cam.x-=(cur.x-prev.x)*cam.w/W;cam.y-=(cur.y-prev.y)*cam.w/W;}
+ else{const other=[...pointers.entries()].find(([id])=>id!==e.pointerId)[1];const d0=Math.hypot(prev.x-other.x,prev.y-other.y),d1=Math.hypot(cur.x-other.x,cur.y-other.y);const r=wrap.getBoundingClientRect();if(d1>0)zoomAt(d0/d1,(cur.x+other.x)/2-r.left,(cur.y+other.y)/2-r.top);}
+ pointers.set(e.pointerId,cur);Object.assign(tgt,{x:cam.x,y:cam.y,w:cam.w});});
+const endPtr=e=>pointers.delete(e.pointerId);wrap.addEventListener('pointerup',endPtr);wrap.addEventListener('pointercancel',endPtr);
+wrap.addEventListener('wheel',e=>{if(e.target.closest('.card,.layers'))return;e.preventDefault();stopFollow();const r=wrap.getBoundingClientRect();zoomAt(Math.exp(e.deltaY*0.0015),e.clientX-r.left,e.clientY-r.top);},{passive:false});
+$('zin').onclick=()=>{stopFollow();tgt.w=Math.max(1.2,tgt.w/1.8);};
+$('zout').onclick=()=>{stopFollow();tgt.w=Math.min(1400,tgt.w*1.8);};
+$('zfit').onclick=()=>{stopFollow();fitBox(S.view<0?ALLBOX:DAYS[S.view].bbox,1.35);};
+$('lySee').onchange=e=>{S.layers.see=e.target.checked;};
+$('lyFood').onchange=e=>{S.layers.food=e.target.checked;};
+$('lyTz').onchange=e=>{S.layers.tz=e.target.checked;$('tzline') .style.display=e.target.checked?'':'none';};
+$('speed').onchange=e=>S.speed=+e.target.value;
+$('follow').onchange=e=>{S.follow=e.target.checked;};
+$('auto').onchange=e=>{S.auto=e.target.checked;};
+$('play').onclick=togglePlay;
+$('prev').onclick=()=>setView(Math.max(0,(S.view<0?0:S.view-1)));
+$('next').onclick=()=>setView(Math.min(3,S.view+1));
+$('scrub').oninput=e=>{S.t=+e.target.value;S.playing=false;updPlay();if(S.view<0)return;const c=carAt(DAYS[S.view],S.t);if(S.follow){tgt.x=c.p[0];tgt.y=c.p[1];}};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!/INPUT|SELECT|BUTTON/.test(e.target.tagName)){e.preventDefault();togglePlay();}if(e.key==='Escape')closeCard();});
+function togglePlay(){if(S.view<0){setView(0);S.all=true;}const D=DAYS[S.view];if(S.t>=D.end-1)S.t=D.start;S.playing=!S.playing;if(S.playing){S.follow=true;$('follow').checked=true;}updPlay();}
+function updPlay(){$('play').textContent=S.playing?'❚❚':'▶';}
+
+/* =================== card =================== */
+function openCard(id,{fly=false,auto=false,ctx=null}={}){const p=PL[id];S.cardId=id;S.cardAuto=auto;
+ const c=$('card');let col='#5f6368',k='';
+ if(p.kind==='main'){col=pinColor(id);const D=S.view>=0?DAYS[S.view]:DAYS.find(d=>d.num[id]!=null);let tm='';if(D){const s=ctx!=null?D.stops[ctx]:D.stops.find(s=>s.id===id);const t=s.arr??s.dep;tm=` · ${fmt(local(t,p.m[0]))} ${tzName(p.m[0])}`;}k=`Ngày ${D?D.n:''}${tm}`;}
+ else {col=p.kind==='food'?'#d93025':'#e37400';k=(p.kind==='food'?'🍽️ Ăn uống dự phòng':'📸 Check-in dự phòng')+(p.days?' · hợp ngày '+p.days.map(d=>d+1).join(', '):'');}
+ let near='';if(p.kind==='main'){const alts=Object.values(PL).filter(q=>q.kind!=='main'&&hav([q.lon,q.lat],[p.lon,p.lat])<22).sort((a,b)=>hav([a.lon,a.lat],[p.lon,p.lat])-hav([b.lon,b.lat],[p.lon,p.lat])).slice(0,6);
+  if(alts.length)near=`<div class="near"><div class="t">GẦN ĐÂY NẾU CẦN ĐỔI KẾ HOẠCH</div>${alts.map(q=>`<button data-open="${q.id}">${q.kind==='food'?'🍽️':'📸'} ${q.name}</button>`).join('')}</div>`;}
+ c.style.setProperty('--c',col);
+ c.innerHTML=`<div class="img">${scene(p.scene)}<button class="x" data-close title="Đóng">✕</button></div><div class="bd"><div class="k">${k}</div><h3>${p.name}</h3><div class="chips">${(p.chips||[]).map(x=>`<span class="chip">${x}</span>`).join('')}</div><ul>${p.notes.map(n=>`<li>${n}</li>`).join('')}</ul>${near}<div class="acts"><a href="${gm(p)}" target="_blank" rel="noopener">Google Maps ↗</a><button data-close>Đóng</button></div></div>`;
+ c.hidden=false;c.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeCard);c.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openCard(b.dataset.open,{fly:true}));
+ if(fly){stopFollow();const z=p.z*1.8;const cardW=W>880?352:0;tgt.x=p.m[0]+cardW/2*z/W;tgt.y=p.m[1]+(W<=880?H*.22*z/W:0);tgt.w=z;}
+ document.querySelectorAll('li.s').forEach(li=>li.classList.toggle('on',li.dataset.id===id));
+}
+function closeCard(){$('card').hidden=true;S.cardId=null;S.cardAuto=false;document.querySelectorAll('li.s.on').forEach(li=>li.classList.remove('on'));}
+
+/* =================== side panel =================== */
+const legText=(D,i)=>{const L=D.legObjs[i];const mins=D.stops[i+1].arr-D.stops[i].dep;const hh=Math.floor(mins/60),mm=mins%60;const dur=(hh?hh+' giờ ':'')+(mm?mm+' phút':'');
+ const kinds=[...new Set(L.modes)].map(m=>MODE_TXT[m]).join(' ');return `${kinds} ≈ ${L.miles<10?L.miles.toFixed(1):Math.round(L.miles)} dặm · ${dur}`;};
+const dirLink=D=>{const pts=D.dir.map(id=>`${PL[id].lat},${PL[id].lon}`);return `https://www.google.com/maps/dir/?api=1&origin=${pts[0]}&destination=${pts[pts.length-1]}&waypoints=${pts.slice(1,-1).join('|')}&travelmode=driving`;};
+function renderSide(){const side=$('side');
+ if(S.view<0){const tot=DAYS.reduce((a,D)=>a+D.driveMiles,0);
+  side.innerHTML=`<h2>Tổng quan chuyến đi</h2><div class="stats"><div class="stat"><b>4</b><span>ngày</span></div><div class="stat"><b>4</b><span>người</span></div><div class="stat"><b>3</b><span>đêm Kanab</span></div><div class="stat"><b>≈${Math.round(tot/10)*10}</b><span>dặm lái</span></div></div>
+  <div style="font-size:12.5px;color:var(--mute);margin:6px 0 2px">Phong cách: tiết kiệm, tự đi, không tour trả phí, trail dưới 3 dặm khứ hồi. Bấm <b>▶</b> để xem mô phỏng cả 4 ngày.</div>
+  ${DAYS.map((D,i)=>{const ids=[...new Set(D.stops.map(s=>s.id))].filter(id=>id!=='airbnb'&&id!=='oc').slice(0,3);return `<button class="daycard" data-day="${i}" style="--c:${D.color}"><div class="dc-k">NGÀY ${D.n} · ${D.date}</div><div class="dc-t">${D.title}</div><div class="dc-m">≈ ${Math.round(D.driveMiles)} dặm lái · ${ids.length} điểm chính</div><div class="thumbs">${ids.map(id=>`<div>${scene(PL[id].scene)}</div>`).join('')}</div></button>`;}).join('')}
+  <h3>Trước khi đi</h3><ul class="checks"><li>Kiểm tra lại lịch shuttle Zion 24–48 giờ trước và sáng hôm đi. Lịch 2026: 25/10 – 28/11.</li><li>Military Annual Pass: dùng cho Zion, Kolob Canyons, Pipe Spring. Không dùng cho Coral Pink Sand Dunes (công viên tiểu bang).</li><li>Utah & Arizona nhanh hơn California/Nevada <b>1 giờ</b>.</li><li>Xem tình trạng đường Utah trước mỗi chuyến: udottraffic.utah.gov.</li><li>Cooler giữ đồ lạnh ≤ 40°F / 4°C; chuyển vào tủ lạnh ngay khi tới.</li><li>Không vào slot canyon / khe hẹp khi có dự báo mưa gần đó hoặc thượng nguồn.</li><li>Lễ Tạ Ơn: nhiều quán đóng hoặc giờ ngắn — gọi trước.</li></ul>
+  <h3>Link chính thức (cần internet)</h3><div class="links"><a href="https://www.nps.gov/zion/learn/news/2026-02-06-shuttle-schedule.htm" target="_blank">Lịch shuttle Zion 2026 (NPS) ↗</a><a href="https://www.nps.gov/zion/planyourvisit/trail-access-information.htm" target="_blank">Tình trạng trail Zion (NPS) ↗</a><a href="https://udottraffic.utah.gov/" target="_blank">Tình trạng đường Utah (UDOT) ↗</a><a href="https://www.visitutah.com/places-to-go/parks-outdoors/grand-staircase-escalante/hiking/the-toadstools" target="_blank">The Toadstools (Visit Utah) ↗</a><a href="https://bellagio.mgmresorts.com/en/entertainment/fountains-of-bellagio.html" target="_blank">Lịch nhạc nước Bellagio ↗</a></div>
+  <p class="fine">Bản đồ được vẽ mô phỏng — đường đi là gần đúng, không theo tỉ lệ đường thật. Giờ mở cửa lấy từ Google Maps (giờ thường ngày; ngày lễ có thể khác). Các nút Google Maps cần internet; phần còn lại chạy offline. Đây là bản kế hoạch, không đảm bảo giờ mở cửa hay tình trạng trail.</p>`;
+  side.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>setView(+b.dataset.day));return;}
+ const D=DAYS[S.view];const ids=new Set(D.stops.map(s=>s.id));
+ const alts=Object.values(PL).filter(p=>p.kind!=='main'&&p.days&&p.days.includes(S.view));
+ let list='';D.stops.forEach((s,i)=>{const p=PL[s.id];const t=s.arr??s.dep;const tt=s.arr!=null&&s.dep!=null?`${fmt(local(s.arr,p.m[0]))} – ${fmt(local(s.dep,p.m[0]))}`:(s.arr!=null?'Đến ':'Đi ')+fmt(local(t,p.m[0]));
+  list+=`<li class="s" data-i="${i}" data-id="${s.id}"><div class="th" style="--c:${D.color}">${scene(p.scene)}<span class="n">${D.num[s.id]}</span></div><div><div class="tm">${tt} ${tzName(p.m[0])}</div><div class="nm">${p.short||p.name}</div><div class="sn">${p.notes[0]}</div></div></li>`;
+  if(i<D.stops.length-1)list+=`<li class="leg" style="--c:${D.color}">${legText(D,i)}</li>`;});
+ const hh=Math.floor(D.driveMin/60),mm=D.driveMin%60;
+ $('side').innerHTML=`<div class="dayhead" style="--c:${D.color}"><div class="dh-k">NGÀY ${D.n} · ${D.date}</div><h2>${D.title}</h2><div class="dh-m">≈ ${Math.round(D.driveMiles)} dặm lái · ~${hh}g${mm?String(mm).padStart(2,'0'):''} trên xe · ${ids.size} điểm</div><div class="dh-act"><button data-play>▶ Mô phỏng ngày này</button><a href="${dirLink(D)}" target="_blank" rel="noopener">Lộ trình Google Maps ↗</a></div></div>
+ <ol class="stops">${list}</ol>
+ <h3>Lưu ý trong ngày</h3><ul class="notes">${D.notes.map(n=>`<li>${n}</li>`).join('')}</ul>
+ <h3>Dự phòng gần tuyến hôm nay</h3><div class="alts">${alts.map(p=>`<button class="alt-b" data-open="${p.id}"><div class="th">${scene(p.scene)}</div><div class="t">${p.kind==='food'?'🍽️':'📸'} ${p.name}<small>${(p.chips||[]).slice(0,2).join(' · ')}</small></div></button>`).join('')}</div>
+ <p class="fine">Mẹo: kéo/cuộn để di chuyển bản đồ, bấm vào ghim để xem chi tiết. Phím Space = chạy/dừng.</p>`;
+ const side2=$('side');
+ side2.querySelector('[data-play]').onclick=()=>{S.all=false;S.t=D.start;S.playing=true;S.follow=true;$('follow').checked=true;updPlay();closeCard();};
+ side2.querySelectorAll('li.s').forEach(li=>li.onclick=()=>{const i=+li.dataset.i,s=D.stops[i];S.playing=false;updPlay();S.t=(s.arr??s.dep);S.lastStop=i;openCard(s.id,{fly:true,ctx:i});});
+ side2.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openCard(b.dataset.open,{fly:true}));
+}
+function renderTabs(){const t=$('tabs');t.innerHTML=`<button class="tab ${S.view<0?'on':''}" data-v="-1">🗺️ Tổng quan</button>`+DAYS.map((D,i)=>`<button class="tab ${S.view===i?'on':''}" data-v="${i}" style="--c:${D.color}"><i></i>Ngày ${D.n}</button>`).join('');t.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{S.all=false;setView(+b.dataset.v);});}
+function setView(v,keepPlaying){S.view=v;if(!keepPlaying){S.playing=false;updPlay();}closeCard();S.lastStop=null;
+ DAYS.forEach((D,i)=>{const g=$('r'+i);const on=v<0||v===i;g.style.opacity=on?1:.22;g.querySelectorAll('.line').forEach(l=>l.setAttribute('stroke',on?D.color:'#9aa0a6'));});
+ if(v>=0){$('r'+v).parentNode.appendChild($('r'+v));const D=DAYS[v];S.t=D.start;$('scrub').min=D.start;$('scrub').max=D.end;$('scrub').value=S.t;$('scrub').disabled=false;carEl.style.setProperty('--c',D.color);fitBox(D.bbox,1.4);}
+ else{$('scrub').disabled=true;fitBox(ALLBOX,1.3);}
+ refreshPins();renderTabs();renderSide();if(!keepPlaying){S.follow=true;$('follow').checked=true;}}
+
+/* =================== frame loop =================== */
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+ let car=null,D=null;
+ if(S.view>=0){D=DAYS[S.view];
+  if(S.playing){S.t+=dt*30*S.speed;if(S.t>=D.end){if(S.all&&S.view<3){setView(S.view+1,true);S.playing=true;D=DAYS[S.view];}else{S.t=D.end;S.playing=false;updPlay();}}$('scrub').value=S.t;}
+  car=carAt(D,S.t);
+  if(S.follow&&S.playing){let z;if(car.stop!=null)z=PL[D.stops[car.stop].id].z*1.8;else{const L=D.legObjs[car.leg];const bw=Math.hypot(PL[D.stops[car.leg].id].m[0]-PL[D.stops[car.leg+1].id].m[0],PL[D.stops[car.leg].id].m[1]-PL[D.stops[car.leg+1].id].m[1]);z=Math.min(Math.max(bw*.75,5),240);if(L.mode!=='d')z=Math.min(Math.max(z,9),12);}
+   const cardOff=(!$('card').hidden&&W>880)?176*z/W:0;tgt.x=car.p[0]+cardOff;tgt.y=car.p[1]+((!$('card').hidden&&W<=880)?H*.2*z/W:0);tgt.w=z;}
+  // auto card
+  if(S.playing&&S.auto){if(car.stop!=null&&S.lastStop!==car.stop){S.lastStop=car.stop;openCard(D.stops[car.stop].id,{auto:true,ctx:car.stop});}
+   else if(car.stop==null&&S.cardAuto){closeCard();S.lastStop=null;} else if(car.stop==null)S.lastStop=null;}
+ }
+ const k=1-Math.exp(-dt*4.5);cam.x+=(tgt.x-cam.x)*k;cam.y+=(tgt.y-cam.y)*k;cam.w=Math.exp(Math.log(cam.w)+(Math.log(tgt.w)-Math.log(cam.w))*k);
+ VB=vb();svg.setAttribute('viewBox',VB.map(v=>v.toFixed(3)).join(' '));
+ drawOverlay(car,D);
+ requestAnimationFrame(frame);}
+
+function drawOverlay(car,D){const w=cam.w;
+ // labels
+ const placed=[];
+ const pins=[];for(const id in pinEls){const o=pinEls[id],p=o.p;let vis;if(p.kind==='main')vis=visibleMain(id);else vis=p.kind==='food'?S.layers.food:S.layers.see;
+  if(!vis){o.e.style.display='none';continue;}const s=scr(p.m);if(s[0]<-60||s[1]<-60||s[0]>W+60||s[1]>H+60){o.e.style.display='none';continue;}
+  let pr=p.kind==='main'?(S.view>=0?0:1):2;if(S.cardId===id)pr=-1;pins.push({o,s,pr,id});}
+ pins.sort((a,b)=>a.pr-b.pr);
+ for(const q of pins){const host=placed.find(h=>Math.hypot(h.s[0]-q.s[0],h.s[1]-q.s[1])<(h.o.p.kind==='main'||q.o.p.kind==='main'?24:20));
+  if(host){host.cl.push(q.o.p);q.o.e.style.display='none';continue;}q.cl=[q.o.p];placed.push(q);}
+ for(const q of placed){const o=q.o;o.e.style.display='';o.e.style.transform=`translate(${q.s[0].toFixed(1)}px,${q.s[1].toFixed(1)}px)`;o.e._cluster=q.cl;
+  if(q.cl.length>1){o.badge.hidden=false;o.badge.textContent='+'+(q.cl.length-1);}else o.badge.hidden=true;
+  const showL=q.cl.length===1&&(o.p.kind==='main'?true:w<14);o.e.classList.toggle('hide-lbl',!showL);o.e.style.zIndex=o.p.kind==='main'?10:5;}
+ for(const L of labelEls){let show;if(L.cls==='state')show=w>120;else if(L.rank===0)show=true;else show=L.rank===1||(L.rank===2&&w<330)||(L.rank===3&&w<90);
+  if(L.cls==='park'&&L.rank===3)show=w<60;if(show){const s=scr(L.m);if(s[0]<-150||s[0]>W+20||s[1]<-20||s[1]>H+20)show=false;else{if(placed.some(q=>Math.abs(q.s[0]-s[0])<26&&Math.abs(q.s[1]-s[1]-8)<18&&!L.cls))show=false;L.e.style.transform=`translate(${(s[0]-(L.cls?L.e.offsetWidth/2:-4)).toFixed(1)}px,${(s[1]-7).toFixed(1)}px)`;}}
+  L.e.style.display=show?'':'none';}
+ for(const Sh of shieldEls){const show=(Sh.rank===1&&w<900)||(Sh.rank===2&&w<300)||(Sh.rank===3&&w<70);Sh.e.style.display=show?'':'none';if(show){const s=scr(Sh.m);Sh.e.style.transform=`translate(${s[0].toFixed(1)}px,${s[1].toFixed(1)}px)`;}}
+ // tz label
+ if(S.layers.tz&&w<500&&w>25){const yv=Math.min(Math.max(cam.y,P(0,36.95)[1]),P(0,33.6)[1]);let lonAt=-114.05;if(yv>P(0,36.19)[1]){lonAt=-114.6;}const s=scr([TZX,Math.min(cam.y+VB[3]*.38,P(0,36.3)[1])]);const sx=s[0];if(sx>40&&sx<W-40){tzLbl.style.display='';tzLbl.style.transform=`translate(${(sx-tzLbl.offsetWidth/2).toFixed(1)}px,${(H-46).toFixed(1)}px)`;}else tzLbl.style.display='none';}else tzLbl.style.display='none';
+ // car
+ const hud=$('hud');
+ if(car&&D){const s=scr(car.p);carEl.style.display='';carEl.style.transform=`translate(${s[0].toFixed(1)}px,${s[1].toFixed(1)}px)`;
+  const mode=car.stop!=null?null:car.mode;carEl.querySelector('.body').textContent=mode==='s'?'🚌':mode==='w'?'🚶':car.stop!=null?'📍':'🚗';
+  const a=carEl.querySelector('.arr');if(car.ang!=null&&car.stop==null){a.style.display='';a.style.transform=`rotate(${(car.ang*180/Math.PI+90).toFixed(1)}deg)`;}else a.style.display='none';
+  const lt=local(S.t,car.p[0]);const tz=tzName(car.p[0]);
+  let st;if(car.stop!=null){const s0=D.stops[car.stop];const p=PL[s0.id];st=S.t<s0.dep&&car.stop===0?`🏁 Chuẩn bị xuất phát từ <b>${p.short||p.name}</b>`:car.stop===D.stops.length-1?`✅ Đã tới <b>${p.short||p.name}</b>`:`📍 Đang ở <b>${p.short||p.name}</b>`;}
+  else{const L=D.legObjs[car.leg];const nx=PL[D.stops[car.leg+1].id];const left=L.miles*(1-ease(car.f));const verb=car.mode==='s'?'🚌 Shuttle':car.mode==='w'?'🚶 Đi bộ':'🚗 Đang lái';st=`${verb} → <b>${nx.short||nx.name}</b> · còn ≈ ${left<10?left.toFixed(1):Math.round(left)} dặm`;}
+  hud.innerHTML=`<div class="k">NGÀY ${D.n} · ${D.date.toUpperCase()}</div><div class="clock">${fmt(lt)}<small>${tz==='PT'?'giờ Pacific (CA/NV)':'giờ Mountain (UT/AZ)'}</small></div><div class="st">${st}</div>`;
+  // night
+  const rise=tz==='PT'?395:430,set=tz==='PT'?1000:1030;let a2=0;if(lt<rise)a2=Math.min(1,(rise-lt)/40);else if(lt>set)a2=Math.min(1,(lt-set)/40);$('night').style.opacity=(a2*.3).toFixed(3);
+ } else {carEl.style.display='none';$('night').style.opacity=0;hud.innerHTML=`<div class="k">TỔNG QUAN · 26–29/11/2026</div><div class="clock" style="font-size:17px">4 ngày · ≈${Math.round(DAYS.reduce((a,D)=>a+D.driveMiles,0)/10)*10} dặm</div><div class="st">${DAYS.map(D=>`<span style="color:${D.color};font-weight:800">●</span> Ngày ${D.n}`).join(' &nbsp;')}<br>Bấm ▶ để chạy mô phỏng cả chuyến</div>`;}
+}
+
+/* =================== init =================== */
+resize();new ResizeObserver(()=>{resize();}).observe(wrap);
+setView(-1);Object.assign(cam,tgt);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
